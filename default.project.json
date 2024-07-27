@@ -1,0 +1,36 @@
+{
+	"name": "exestack",
+	"tree": {
+		"$className": "DataModel",
+		"ReplicatedStorage": {
+			"$className": "ReplicatedStorage",
+			"Exestack": {
+				"$className": "Folder",
+
+				"ExestackMain": {
+					"$path": "src/Exestack/Main.luau"
+				},
+
+				"Applications": {
+					"$path": "src/Exestack/Applications"
+				},
+
+				"Documents": {
+					"$path": "src/Exestack/Documents"
+				},
+
+				"Modules": {
+					"$path": "src/Exestack/Modules"
+				},
+
+				"Storage": {
+					"$path": "src/Exestack/Storage"
+				},
+
+				"UI": {
+					"$path": "src/Exestack/UI"
+				}
+			}
+		}
+	}
+}
