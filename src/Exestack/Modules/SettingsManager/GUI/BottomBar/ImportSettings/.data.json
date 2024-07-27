@@ -1,0 +1,25 @@
+{
+  "className": "TextButton",
+  "properties": {
+    "AutoButtonColor": false,
+    "BackgroundColor3": [0.262745, 0.262745, 0.262745],
+    "BorderColor3": [0.145098, 0.145098, 0.145098],
+    "FontFace": {
+      "family": "rbxasset://fonts/families/SourceSansPro.json",
+      "weight": "Regular",
+      "style": "Normal",
+      "cachedFaceId": null
+    },
+    "Position": {
+      "UDim2": [[0.0, 250], [0.2, 0]]
+    },
+    "Size": {
+      "UDim2": [[0.0, 110], [0.6, 0]]
+    },
+    "Text": "Import Selected Data",
+    "TextColor3": [0.784313, 0.784313, 0.784313],
+    "TextSize": 14,
+    "Visible": false,
+    "ZIndex": 3
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "className": "Frame",
+  "properties": {
+    "Active": true,
+    "BackgroundTransparency": 1,
+    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "ClipsDescendants": true,
+    "Position": {
+      "UDim2": [[0.0, 25], [0.0, 5]]
+    },
+    "Size": {
+      "UDim2": [[1.0, -30], [1.0, -10]]
+    }
+  }
+}

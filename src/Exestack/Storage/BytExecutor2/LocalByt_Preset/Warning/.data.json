@@ -1,0 +1,26 @@
+{
+  "className": "TextLabel",
+  "properties": {
+    "BackgroundColor3": [0.862745, 0.862745, 0.862745],
+    "BackgroundTransparency": 1,
+    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "FontFace": {
+      "family": "rbxasset://fonts/families/SourceSansPro.json",
+      "weight": "Regular",
+      "style": "Normal",
+      "cachedFaceId": null
+    },
+    "Position": {
+      "UDim2": [[0.0, 10], [0.0, 0]]
+    },
+    "Size": {
+      "UDim2": [[1.0, -60], [1.0, 0]]
+    },
+    "Text": "Delete 'Unknown Byt'?",
+    "TextColor3": [0.90196, 0.90196, 0.90196],
+    "TextSize": 16,
+    "TextXAlignment": "Left",
+    "Visible": false,
+    "ZIndex": 120
+  }
+}

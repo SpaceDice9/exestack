@@ -1,0 +1,19 @@
+{
+  "className": "ImageButton",
+  "properties": {
+    "Active": false,
+    "AutoButtonColor": false,
+    "BackgroundColor3": [0, 0.666666, 1],
+    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "ClipsDescendants": true,
+    "Image": "http://www.roblox.com/asset/?id=6031094667",
+    "Position": {
+      "UDim2": [[0.1, 0], [0.2, 0]]
+    },
+    "Selectable": false,
+    "Size": {
+      "UDim2": [[0.7, 0], [0.6, 0]]
+    },
+    "ZIndex": 5
+  }
+}

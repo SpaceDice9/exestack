@@ -1,0 +1,25 @@
+{
+  "className": "ImageButton",
+  "properties": {
+    "AnchorPoint": [1, 0.5],
+    "Attributes": {
+      "InteractionType": {
+        "String": "Running"
+      }
+    },
+    "BackgroundColor3": [0.654901, 0.654901, 0.654901],
+    "BackgroundTransparency": 1,
+    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "Image": "rbxassetid://10734919336",
+    "ImageColor3": [0.823529, 0.823529, 0.823529],
+    "LayoutOrder": 1,
+    "Position": {
+      "UDim2": [[1.0, -4], [0.5, 0]]
+    },
+    "Size": {
+      "UDim2": [[1.0, 0], [0.75, 0]]
+    },
+    "Visible": false,
+    "ZIndex": 12
+  }
+}

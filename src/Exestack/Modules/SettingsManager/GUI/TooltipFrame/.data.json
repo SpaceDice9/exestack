@@ -1,0 +1,17 @@
+{
+  "className": "Frame",
+  "properties": {
+    "AnchorPoint": [0, 1],
+    "BackgroundColor3": [0.223529, 0.223529, 0.223529],
+    "BorderColor3": [0.145098, 0.145098, 0.145098],
+    "BorderMode": "Inset",
+    "Position": {
+      "UDim2": [[0.0, 5], [0.0, 65]]
+    },
+    "Size": {
+      "UDim2": [[0.0, 100], [0.0, 20]]
+    },
+    "Visible": false,
+    "ZIndex": 100
+  }
+}

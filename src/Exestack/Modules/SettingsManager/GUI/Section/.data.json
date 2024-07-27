@@ -1,0 +1,26 @@
+{
+  "className": "TextButton",
+  "properties": {
+    "Active": false,
+    "AutoButtonColor": false,
+    "BackgroundColor3": [0.262745, 0.262745, 0.262745],
+    "BorderColor3": [0.145098, 0.145098, 0.145098],
+    "BorderMode": "Inset",
+    "FontFace": {
+      "family": "rbxasset://fonts/families/SourceSansPro.json",
+      "weight": "SemiBold",
+      "style": "Normal",
+      "cachedFaceId": null
+    },
+    "Selectable": false,
+    "Size": {
+      "UDim2": [[1.0, 0], [0.0, 20]]
+    },
+    "Text": "Default Section",
+    "TextColor3": [1, 1, 1],
+    "TextSize": 14,
+    "TextStrokeColor3": [1, 1, 1],
+    "TextWrapped": true,
+    "ZIndex": 2
+  }
+}

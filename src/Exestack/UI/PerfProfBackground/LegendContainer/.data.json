@@ -1,0 +1,21 @@
+{
+  "className": "ScrollingFrame",
+  "properties": {
+    "Active": true,
+    "BackgroundColor3": [1, 1, 1],
+    "BackgroundTransparency": 1,
+    "BorderColor3": [0, 0, 0],
+    "BorderSizePixel": 0,
+    "CanvasSize": {
+      "UDim2": [[2.0, 0], [0.0, 0]]
+    },
+    "Position": {
+      "UDim2": [[0.0, 15], [0.0, 340]]
+    },
+    "ScrollBarImageColor3": [0, 0, 0],
+    "ScrollBarThickness": 5,
+    "Size": {
+      "UDim2": [[0.0, 350], [0.0, 40]]
+    }
+  }
+}

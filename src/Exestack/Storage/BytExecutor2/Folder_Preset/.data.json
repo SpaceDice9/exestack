@@ -1,0 +1,23 @@
+{
+  "className": "Frame",
+  "properties": {
+    "Attributes": {
+      "BytAddress": {
+        "String": ""
+      },
+      "ElementType": {
+        "String": "Normal"
+      }
+    },
+    "BackgroundColor3": [0.262745, 0.262745, 0.262745],
+    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "BorderSizePixel": 0,
+    "Position": {
+      "UDim2": [[0.0, 2], [0.0, 2]]
+    },
+    "Size": {
+      "UDim2": [[1.0, 0], [0.0, 23]]
+    },
+    "ZIndex": 10
+  }
+}

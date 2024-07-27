@@ -1,0 +1,19 @@
+{
+  "className": "UIGradient",
+  "properties": {
+    "Rotation": 90,
+    "Transparency": {
+      "NumberSequence": {
+        "keypoints": [{
+            "time": 0.0,
+            "value": 1.0,
+            "envelope": 0.0
+          }, {
+            "time": 1.0,
+            "value": 0.0,
+            "envelope": 0.0
+          }]
+      }
+    }
+  }
+}

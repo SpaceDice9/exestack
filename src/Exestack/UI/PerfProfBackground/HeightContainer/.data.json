@@ -1,0 +1,13 @@
+{
+  "className": "Frame",
+  "properties": {
+    "AnchorPoint": [0, 1],
+    "BackgroundColor3": [0.145098, 0.145098, 0.145098],
+    "BorderColor3": [0, 0, 0],
+    "Size": {
+      "UDim2": [[0.0, 30], [0.0, 14]]
+    },
+    "Visible": false,
+    "ZIndex": 100
+  }
+}

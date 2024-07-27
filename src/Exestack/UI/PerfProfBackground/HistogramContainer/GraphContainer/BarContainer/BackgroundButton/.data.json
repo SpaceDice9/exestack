@@ -1,0 +1,27 @@
+{
+  "className": "TextButton",
+  "properties": {
+    "Attributes": {
+      "Undeletable": {
+        "Bool": true
+      }
+    },
+    "AutoButtonColor": false,
+    "BackgroundColor3": [1, 1, 1],
+    "BackgroundTransparency": 1,
+    "BorderColor3": [0, 0, 0],
+    "BorderSizePixel": 0,
+    "FontFace": {
+      "family": "rbxasset://fonts/families/SourceSansPro.json",
+      "weight": "Regular",
+      "style": "Normal",
+      "cachedFaceId": null
+    },
+    "Size": {
+      "UDim2": [[1.0, 0], [1.0, 0]]
+    },
+    "Text": "",
+    "TextColor3": [0, 0, 0],
+    "TextSize": 14
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "className": "ScrollingFrame",
+  "properties": {
+    "BackgroundColor3": [0.184313, 0.184313, 0.184313],
+    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "BorderMode": "Inset",
+    "BottomImage": "rbxasset://textures/ui/Scroll/scroll-middle.png",
+    "Position": {
+      "UDim2": [[0.0, 14], [0.0, 0]]
+    },
+    "ScrollBarThickness": 6,
+    "Selectable": false,
+    "Size": {
+      "UDim2": [[1.0, -14], [1.0, -29]]
+    },
+    "TopImage": "rbxasset://textures/ui/Scroll/scroll-middle.png",
+    "Visible": false,
+    "ZIndex": 2
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "className": "TextLabel",
+  "properties": {
+    "BackgroundColor3": [1, 1, 1],
+    "BackgroundTransparency": 1,
+    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "FontFace": {
+      "family": "rbxasset://fonts/families/SourceSansPro.json",
+      "weight": "Regular",
+      "style": "Normal",
+      "cachedFaceId": null
+    },
+    "LayoutOrder": 3,
+    "Size": {
+      "UDim2": [[1.0, 0], [0.0, 60]]
+    },
+    "Text": "A \"byt\" is what BytExecutor uses to store code that it can run. Hovering over a byt gives you the primary interactions, such as execute, delete, and others. Double-click in order to edit a byt.\n",
+    "TextColor3": [0.615686, 0.615686, 0.615686],
+    "TextSize": 15,
+    "TextWrapped": true,
+    "TextXAlignment": "Left",
+    "TextYAlignment": "Top",
+    "Visible": false
+  }
+}

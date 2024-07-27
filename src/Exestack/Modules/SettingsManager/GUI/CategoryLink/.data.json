@@ -1,0 +1,26 @@
+{
+  "className": "TextButton",
+  "properties": {
+    "Active": false,
+    "AutoButtonColor": false,
+    "BackgroundColor3": [0.184313, 0.184313, 0.184313],
+    "BorderColor3": [0.145098, 0.145098, 0.145098],
+    "BorderMode": "Inset",
+    "BorderSizePixel": 0,
+    "FontFace": {
+      "family": "rbxasset://fonts/families/SourceSansPro.json",
+      "weight": "Regular",
+      "style": "Normal",
+      "cachedFaceId": null
+    },
+    "Selectable": false,
+    "Size": {
+      "UDim2": [[1.0, 0], [0.0, 40]]
+    },
+    "Text": "",
+    "TextColor3": [0.784313, 0.784313, 0.784313],
+    "TextSize": 16,
+    "TextXAlignment": "Left",
+    "ZIndex": 3
+  }
+}

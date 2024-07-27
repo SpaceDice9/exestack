@@ -1,0 +1,26 @@
+{
+  "className": "TextLabel",
+  "properties": {
+    "BackgroundColor3": [0.223529, 0.223529, 0.223529],
+    "BackgroundTransparency": 1,
+    "BorderColor3": [0.145098, 0.145098, 0.145098],
+    "FontFace": {
+      "family": "rbxasset://fonts/families/SourceSansPro.json",
+      "weight": "Regular",
+      "style": "Normal",
+      "cachedFaceId": null
+    },
+    "Position": {
+      "UDim2": [[0.0, 20], [0.0, 3]]
+    },
+    "Size": {
+      "UDim2": [[1.0, -25], [1.0, -6]]
+    },
+    "Text": "Add Byt To Imported Scripts",
+    "TextColor3": [1, 1, 1],
+    "TextSize": 14,
+    "TextWrapped": true,
+    "TextXAlignment": "Left",
+    "ZIndex": 2
+  }
+}

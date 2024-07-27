@@ -1,0 +1,15 @@
+{
+  "className": "Frame",
+  "properties": {
+    "BackgroundColor3": [0, 0, 0],
+    "BackgroundTransparency": 0.5,
+    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "BorderSizePixel": 0,
+    "Position": {
+      "UDim2": [[0.0, 20], [0.0, 76]]
+    },
+    "Size": {
+      "UDim2": [[1.0, -40], [0.0, 1]]
+    }
+  }
+}

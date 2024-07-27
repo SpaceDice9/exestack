@@ -1,0 +1,12 @@
+{
+  "className": "Frame",
+  "properties": {
+    "BackgroundColor3": [0.262745, 0.262745, 0.262745],
+    "BorderColor3": [0.145098, 0.145098, 0.145098],
+    "BorderMode": "Inset",
+    "Size": {
+      "UDim2": [[0.3, 1], [1.0, -29]]
+    },
+    "Visible": false
+  }
+}

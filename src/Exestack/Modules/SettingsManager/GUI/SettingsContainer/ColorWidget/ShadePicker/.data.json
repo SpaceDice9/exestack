@@ -1,0 +1,18 @@
+{
+  "className": "TextButton",
+  "properties": {
+    "Active": false,
+    "AutoButtonColor": false,
+    "BackgroundColor3": [1, 0, 0],
+    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "Position": {
+      "UDim2": [[0.0, 180], [0.0, 15]]
+    },
+    "Selectable": false,
+    "Size": {
+      "UDim2": [[0.0, 10], [0.0, 130]]
+    },
+    "Text": "",
+    "ZIndex": 160
+  }
+}

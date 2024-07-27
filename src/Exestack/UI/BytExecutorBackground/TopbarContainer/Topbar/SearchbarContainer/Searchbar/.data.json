@@ -1,0 +1,27 @@
+{
+  "className": "TextBox",
+  "properties": {
+    "BackgroundColor3": [1, 1, 1],
+    "BackgroundTransparency": 1,
+    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "ClearTextOnFocus": false,
+    "FontFace": {
+      "family": "rbxasset://fonts/families/SourceSansPro.json",
+      "weight": "Regular",
+      "style": "Normal",
+      "cachedFaceId": null
+    },
+    "PlaceholderColor3": [0.615686, 0.615686, 0.615686],
+    "PlaceholderText": "Search for element",
+    "Position": {
+      "UDim2": [[0.0, 30], [0.0, 0]]
+    },
+    "Size": {
+      "UDim2": [[1.0, -35], [1.0, 0]]
+    },
+    "Text": "",
+    "TextColor3": [0.862745, 0.862745, 0.862745],
+    "TextSize": 14,
+    "TextXAlignment": "Left"
+  }
+}

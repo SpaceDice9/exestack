@@ -1,0 +1,16 @@
+{
+  "className": "TextButton",
+  "properties": {
+    "Active": false,
+    "AutoButtonColor": false,
+    "BackgroundColor3": [0.145098, 0.145098, 0.145098],
+    "BorderColor3": [0, 0, 0],
+    "BorderSizePixel": 0,
+    "Selectable": false,
+    "Size": {
+      "UDim2": [[0.0, 100], [1.0, 0]]
+    },
+    "Text": "",
+    "TextTransparency": 1
+  }
+}

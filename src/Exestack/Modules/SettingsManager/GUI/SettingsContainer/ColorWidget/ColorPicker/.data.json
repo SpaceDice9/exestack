@@ -1,0 +1,19 @@
+{
+  "className": "TextButton",
+  "properties": {
+    "Active": false,
+    "AutoButtonColor": false,
+    "BackgroundColor3": [1, 1, 1],
+    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "ClipsDescendants": true,
+    "Position": {
+      "UDim2": [[0.0, 15], [0.0, 15]]
+    },
+    "Selectable": false,
+    "Size": {
+      "UDim2": [[0.0, 150], [0.0, 130]]
+    },
+    "Text": "",
+    "ZIndex": 160
+  }
+}

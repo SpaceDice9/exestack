@@ -1,0 +1,24 @@
+{
+  "className": "TextLabel",
+  "properties": {
+    "BackgroundColor3": [1, 1, 1],
+    "BackgroundTransparency": 1,
+    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "FontFace": {
+      "family": "rbxasset://fonts/families/SourceSansPro.json",
+      "weight": "Regular",
+      "style": "Normal",
+      "cachedFaceId": null
+    },
+    "LayoutOrder": 2,
+    "Size": {
+      "UDim2": [[1.0, 0], [0.0, 200]]
+    },
+    "Text": "You currently have no elements.  Press the plus icon in the top-left corner to create a new byt.\n\nA \"byt\" is what BytExecutor uses to store code that it can run.  Hovering over a byt gives you the primary interactions, such as execute, delete, and others.  Double-click in order to edit a byt.\n\nA more detailed explanation and guide may be found at the Help option or the associated DevForum post.",
+    "TextColor3": [0.615686, 0.615686, 0.615686],
+    "TextSize": 15,
+    "TextWrapped": true,
+    "TextXAlignment": "Left",
+    "TextYAlignment": "Top"
+  }
+}

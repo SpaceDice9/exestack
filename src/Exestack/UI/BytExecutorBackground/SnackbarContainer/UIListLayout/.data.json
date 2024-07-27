@@ -1,0 +1,10 @@
+{
+  "className": "UIListLayout",
+  "properties": {
+    "Padding": {
+      "UDim": [0.0, 5]
+    },
+    "SortOrder": "LayoutOrder",
+    "VerticalAlignment": "Bottom"
+  }
+}

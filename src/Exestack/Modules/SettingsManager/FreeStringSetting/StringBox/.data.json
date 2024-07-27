@@ -1,0 +1,29 @@
+{
+  "className": "TextBox",
+  "properties": {
+    "Active": false,
+    "BackgroundColor3": [0.223529, 0.223529, 0.223529],
+    "BackgroundTransparency": 1,
+    "BorderColor3": [0.145098, 0.145098, 0.145098],
+    "ClearTextOnFocus": false,
+    "ClipsDescendants": true,
+    "FontFace": {
+      "family": "rbxasset://fonts/families/SourceSansPro.json",
+      "weight": "Regular",
+      "style": "Normal",
+      "cachedFaceId": null
+    },
+    "Position": {
+      "UDim2": [[0.0, 5], [0.0, 0]]
+    },
+    "Selectable": false,
+    "Size": {
+      "UDim2": [[1.0, -10], [1.0, 0]]
+    },
+    "Text": "",
+    "TextColor3": [1, 1, 1],
+    "TextSize": 14,
+    "TextXAlignment": "Left",
+    "ZIndex": 5
+  }
+}
