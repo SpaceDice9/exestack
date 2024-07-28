@@ -27,6 +27,15 @@
         "UI": {
           "$path": "src/Exestack/UI"
         }
+      },
+      "ExestackAutocomplete": {
+        "$className": "Folder",
+        "ExsAutocompMain": {
+          "$path": "src/ExestackAutocomplete/ExsAutocompMain.server.luau"
+        },
+        "Modules": {
+          "$path": "src/ExestackAutocomplete/Modules"
+        }
       }
     }
   }
