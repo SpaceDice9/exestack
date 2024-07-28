@@ -15,6 +15,9 @@
         "ExestackMain": {
           "$path": "src/Exestack/ExestackMain.server.luau"
         },
+        "Inserted": {
+          "$path": "src/Exestack/Inserted"
+        },
         "Modules": {
           "$path": "src/Exestack/Modules"
         },

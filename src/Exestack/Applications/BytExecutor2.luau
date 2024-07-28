@@ -14,6 +14,7 @@ local ExestackFile = Apps.Parent
 local plugin = ExestackFile.Parent
 
 local Storage = ExestackFile.Storage.BytExecutor2
+local InsertedScripts = ExestackFile.Inserted.BytExecutor2
 local Modules = ExestackFile.Modules
 
 local References = require(Modules.References)
@@ -839,11 +840,11 @@ function initReplication()
 	internalEventCaller.Parent = bytEventFolder
 
 
-	local serverExeScript = Storage.BytExecutorServer:Clone()
+	local serverExeScript = InsertedScripts.BytExecutorServer:Clone()
 	serverExeScript.Enabled = true
 	serverExeScript.Parent = bytExeServer
 
-	local clientExeScript = Storage.BytExecutorClient:Clone()
+	local clientExeScript = InsertedScripts.BytExecutorClient:Clone()
 	clientExeScript.Enabled = true
 	clientExeScript.Parent = bytExeClient
 end
@@ -1469,7 +1470,7 @@ function Executable:Resume()
 end
 
 function loadScriptSource(scriptSource)
-	local loadedLua = LuaTableModule.FromScript(Storage.BytExecutable)
+	local loadedLua = LuaTableModule.FromScript(InsertedScripts.BytExecutable)
 	local bytLua = LuaTableModule.FromString(scriptSource)
 
 	local bytFirstLine = bytLua.Code[1]
@@ -1492,7 +1493,7 @@ function loadScript(scriptObject)
 		source = scriptObject.Source
 	end
 
-	local loadelScript = Storage.BytExecutable:Clone()
+	local loadelScript = InsertedScripts.BytExecutable:Clone()
 	local loadedLua = loadScriptSource(source)
 
 	loadelScript.Name = scriptObject.Name .. " [INTERNAL EXECUTABLE]"
@@ -1509,7 +1510,7 @@ function loadScript(scriptObject)
 end
 
 function giveScriptBytLib(scriptObject)
-	local newBytLib = Storage.BytLib:Clone()
+	local newBytLib = InsertedScripts.BytLib:Clone()
 	newBytLib.Parent = scriptObject
 	
 	require(newBytLib)._Apps = AppList
