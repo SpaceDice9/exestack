@@ -1920,7 +1920,7 @@ function addEmptyElement(elementPreset, elementType, name, parent)
 		PartsRegistered = {},
 
 		Parent = nil
-	}
+	} :: ElementData
 
 	local elementDataList = getElementList(parent)
 	newElementData.Parent = parent

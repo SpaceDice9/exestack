@@ -213,6 +213,8 @@ function API.Require(module: ModuleScript | string): any
 		local returnValue = API._Apps.BytExecutor2.ExecuteScript(bytData.Script, false)
 		
 		return returnValue
+	else
+		error("module argument given was not a ModuleScript or string")
 	end
 end
 

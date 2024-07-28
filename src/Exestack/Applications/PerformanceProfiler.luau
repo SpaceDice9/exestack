@@ -162,7 +162,7 @@ function InfoBox:Resize()
 	local size = 0
 	
 	for _, uiElement: Instance in self.Instance:GetChildren() do
-		if uiElement:IsA("GuiBase2d") and uiElement.Visible then
+		if uiElement:IsA("GuiObject") and uiElement.Visible then
 			size += uiElement.AbsoluteSize.Y + 5
 		end
 	end

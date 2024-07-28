@@ -247,20 +247,14 @@ function StandardNormalFunc(x)
 end
 
 function Zeciar.NormalPDF(x: number, mean: number?, sd: number?)
-	mean = mean or 0
-	sd = sd or 1
-
-	local z = (x - mean)/sd
+	local z = (x - ( mean or 0 ))/( sd or 1 )
 
 	return StandardNormalFunc(z)
 end
 
 function Zeciar.NormalCDF(lower: number, upper: number, mean: number?, sd: number?)
-	mean = mean or 0
-	sd = sd or 1
-
-	local z_lower = math.clamp((lower - mean)/sd, -10, 10)
-	local z_upper = math.clamp((upper - mean)/sd, -10, 10)
+	local z_lower = math.clamp((lower - ( mean or 0 ))/( sd or 1 ), -10, 10)
+	local z_upper = math.clamp((upper - ( mean or 0 ))/( sd or 1 ), -10, 10)
 
 	return integral(z_lower, z_upper, StandardNormalFunc)
 end
