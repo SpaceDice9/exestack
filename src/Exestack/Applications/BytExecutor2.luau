@@ -1245,6 +1245,7 @@ end
 function tryDropIntoFolder(folderData: ElementData?)
 	onDragElementToFolder(folderData)
 	updateReplicationOrdering()
+	Dragging = false
 end
 
 function onDragElementToFolder(elementData: ElementData?)
