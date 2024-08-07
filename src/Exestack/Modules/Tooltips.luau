@@ -80,7 +80,7 @@ function Tooltips:newTooltip(gui, tip)
 			local size = TextService:GetTextSize(tooltip.Text, label.TextSize, label.Font, Vector2.new(math.huge, label.Size.Y.Offset))
 			
 			label.Text = tooltip.Text
-			instance.Size = UDim2.fromOffset(size.X + 4 + 4, instance.Size.Y.Offset)
+			instance.Size = UDim2.fromOffset(size.X + 4 + 4 + 1, instance.Size.Y.Offset)
 			instance.Visible = self.enabled
 		end
 	end)
