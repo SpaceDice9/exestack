@@ -27,6 +27,8 @@ local SettingsManager = require(Modules.SettingsManager)
 local Ode = require(Modules.OdeScriptEditor)
 local Console = require(Modules.Console)
 
+local Breadcrumbs = require(Modules.UI.Breadcrumbs)
+
 local AppList = require(Modules.AppList)
 
 local returnAPI = {}
@@ -75,7 +77,6 @@ local NewBytScriptButton = Topbar.NewElementButton
 local MoreOptionsButton = Topbar.MoreOptionsButton
 local Searchbar = Topbar.SearchbarContainer.Searchbar
 
-local ParentContainer = ExecutorBackground.ParentContainer
 local SelectionBox = ExecutorBackground.SelectionBox
 
 local PromptContainer = ExecutorBackground.PromptContainer
@@ -102,7 +103,6 @@ local ElementSelection = {}
 local ElementDragged = {}
 local ElementHovering = nil
 local ElementLastHovered = nil
-local FolderOpened = nil
 local ElementRightClicked = nil
 local SearchWord = ""
 
@@ -359,13 +359,20 @@ type Theme = typeof(Theme)
 ExecutorBackground.Visible = true
 ExecutorBackground.Parent = ExecutorWidget
 
+local MouseField = Buttony.MouseField(ClickFieldFrame)
+
+local FolderBreadcrumbs = Breadcrumbs.new({
+	MouseField = MouseField,
+	Container = ExecutorBackground.FolderBreadcrumbsContainer,
+	BreadcrumbPreset = Storage.FolderBreadcrumb_Preset,
+
+	RootName = "BS",
+})
+
 local Tooltips = TooltipsModule.init(ExecutorBackground.TooltipFrame, ExecutorBackground)
 Tooltips:newTooltip(NewBytScriptButton, "New Element")
 Tooltips:newTooltip(MoreOptionsButton, "More Options")
-Tooltips:newTooltip(ParentContainer, "Parent Element")
-
-
-local MouseField = Buttony.MouseField(ClickFieldFrame)
+Tooltips:newTooltip(FolderBreadcrumbs.Container, "Folder Path")
 
 local Preferences = References.Preferences
 local BytExecutor2Category = Preferences:AddCategory("BytExecutor2")
@@ -921,11 +928,13 @@ function changeTheme(themeName)
 	NewBytScriptButton.ImageColor3 = themeData.NormalIcon
 	MoreOptionsButton.ImageColor3 = themeData.NormalIcon
 
-	ParentContainer.BackgroundColor3 = themeData.InsetHeader
-	ParentContainer.BorderColor3 = themeData.LightBorder
-	ParentContainer.Separater.BackgroundColor3 = themeData.NegativeBorder
-	ParentContainer.ParentImage.ImageColor3 = themeData.NormalIcon
-	ParentContainer.ParentName.TextColor3 = themeData.TextColor
+	FolderBreadcrumbs:ChangeTheme({
+		BackgroundColor = themeData.InsetHeader,
+		BorderColor = themeData.LightBorder,
+		SeparatorColor = themeData.NegativeBorder,
+		IconColor = themeData.NormalIcon,
+		TextColor = themeData.TextColor,
+	})
 
 	ExecutorBackground.Display.Separater1.BackgroundColor3 = themeData.HeavyBorder
 	ExecutorBackground.Display.Separater2.BackgroundColor3 = themeData.HeavyBorder
@@ -956,6 +965,8 @@ function applyOdeTheme()
 end
 
 function selectElement(elementData)
+	if table.find(ElementSelection, elementData) then return end
+	
 	local element = elementData.Gui
 	local elementIcon = element.ElementIcon
 
@@ -985,7 +996,7 @@ function deselectAllElements()
 		element.BackgroundColor3 = Theme.NormalByt
 		element.SelectionStroke.Enabled = false
 	end
-
+	
 	table.clear(ElementSelection)
 end
 
@@ -1025,7 +1036,7 @@ function convertToReal(pos, size)
 end
 
 function reselectWithSelectionBox()
-	local elementDataList = getElementList(FolderOpened)
+	local elementDataList = getElementList(FolderBreadcrumbs.OpenedFolder)
 
 	if not HoldingControl then
 		table.clear(ElementSelection)
@@ -1061,21 +1072,6 @@ function getElementList(folderData)
 	end
 
 	return elementDataList
-end
-
-function getFullNameOfElement(elementData)
-	local fullName = elementData.Name
-	local parent = elementData.Parent
-	local n = 0
-
-	while parent and n < 1000 do
-		fullName = parent.Name .. "/" .. fullName
-		parent = parent.Parent
-
-		n += 1
-	end
-
-	return "BS:/" .. fullName
 end
 
 function getIndexPathOfElement(elementData)
@@ -1177,49 +1173,15 @@ function updateNoElementDisplayVisibility()
 end
 
 function openFolder(folderElementData)
-	local oldElementList = BytSourcesList
-	local newElementList = BytSourcesList
-	local name = "BS:/"
-
-	if FolderOpened then
-		oldElementList = FolderOpened.ElementList
-	end
-
-	if folderElementData then
-		newElementList = folderElementData.ElementList
-		name = getFullNameOfElement(folderElementData)
-	end
-
-	if oldElementList == newElementList then
-		return
-	end
-
-	for _, oldElementData in oldElementList do
-		oldElementData.Gui.Parent = nil
-	end
-
-	for _, elementData in newElementList do
-		elementData.Gui.Parent = ElementListFrame
-	end
-
-	FolderOpened = folderElementData
-	ParentContainer.ParentName.Text = name
-	Searchbar.PlaceholderText = "Search for element"
-	
-	task.defer(deselectAllElements)
-
-	updateElementVisibility(folderElementData)
-	updateScrollSize()
-	
-	DirectoryChanged = true
+	FolderBreadcrumbs:Open(folderElementData)
 end
 
 function moveElementTo(folderElementData, elementData)
 	local oldElementList = BytSourcesList
 	local newElementList = BytSourcesList
 
-	if FolderOpened then
-		oldElementList = FolderOpened.ElementList
+	if FolderBreadcrumbs.OpenedFolder then
+		oldElementList = FolderBreadcrumbs.OpenedFolder.ElementList
 	end
 
 	if folderElementData then
@@ -1236,7 +1198,7 @@ function moveElementTo(folderElementData, elementData)
 	table.insert(newElementList, elementData)
 	elementData.Parent = folderElementData
 
-	if folderElementData == FolderOpened then
+	if folderElementData == FolderBreadcrumbs.OpenedFolder then
 		elementData.Gui.Parent = ElementListFrame
 	else
 		elementData.Gui.Parent = nil
@@ -1280,8 +1242,14 @@ function onStartDragging(element, elementData, x, y)
 	hideSelectionBox()
 end
 
-function onDragElementToFolder(elementData)
-	if elementData.Type ~= ElementTypes.Folder or table.find(ElementDragged, elementData) or not Dragging then
+function tryDropIntoFolder(folderData: ElementData?)
+	onDragElementToFolder(folderData)
+	updateReplicationOrdering()
+end
+
+function onDragElementToFolder(elementData: ElementData?)
+	local isElementInvalid = (elementData ~= nil) and (elementData.Type ~= ElementTypes.Folder or table.find(ElementDragged, elementData))
+	if isElementInvalid or (not Dragging) then
 		return
 	end
 	
@@ -1323,31 +1291,6 @@ end
 function getListPositionFromMouse(y)
 	--80 pixels is when the byt list gui starts
 	return math.ceil((y - 80)/25)
-end
-
--- note: called when user drags elements to open folder at parent widget
-function onDragSelectedToParent()
-	if not FolderOpened then
-		return
-	end
-	
-	local parentElementData = FolderOpened.Parent
-
-	for _, otherElementData in ElementDragged do
-		moveElementTo(parentElementData, otherElementData)
-	end
-	
-	if CompiledPreferences.OpenFolderOnDrag then
-		openFolder(parentElementData)
-		
-		if not CompiledPreferences.SelectElementsDraggedOnOpeningFolder then
-			return
-		end
-		
-		for _, elementData in ElementDragged do
-			task.defer(selectElement, elementData)
-		end
-	end
 end
 
 function addPartsToElementData(elementData, parts)
@@ -1745,8 +1688,8 @@ end
 function addReplicationInstance(elementData, replicationInstance, parent, ignoreOpenedFolder)
 	if parent then
 		replicationInstance.Parent = parent.ReplicationInstance
-	elseif FolderOpened and not ignoreOpenedFolder then
-		replicationInstance.Parent = FolderOpened.ReplicationInstance
+	elseif FolderBreadcrumbs.OpenedFolder and not ignoreOpenedFolder then
+		replicationInstance.Parent = FolderBreadcrumbs.OpenedFolder.ReplicationInstance
 	else
 		replicationInstance.Parent = ReplicatedStorage.BytReplicationFolder
 	end
@@ -1818,7 +1761,7 @@ function loadReplicatedElementList(replicationElementList, parent)
 		if serializedElementInstance:IsA("LuaSourceContainer") then
 			local elementData = addBytElement(serializedElementInstance.Name, parent)
 
-			if parent ~= FolderOpened then
+			if parent ~= FolderBreadcrumbs.OpenedFolder then
 				elementData.Gui.Parent = nil
 			end
 
@@ -2042,7 +1985,7 @@ function addEmptyElement(elementPreset, elementType, name, parent)
 		TextboxFocusedOn:ReleaseFocus()
 	end
 	
-	if parent ~= FolderOpened then
+	if parent ~= FolderBreadcrumbs.OpenedFolder then
 		element.Parent = nil
 	end
 
@@ -2272,9 +2215,7 @@ function addFolderElement(folderName, parent)
 	end)
 	
 	MouseField:LeftRelease(mainButton, function()
-		onDragElementToFolder(folderData)
-		updateReplicationOrdering()
-		--print("released", folderData)
+		tryDropIntoFolder(folderData)
 	end)
 	
 	MouseField:LeftDouble(mainButton, function(holdX, holdY)
@@ -2834,7 +2775,7 @@ function loadSerializedElementListInstance(serializedElementList, parent)
 				elementData = addBytElement(name, parent)
 			end
 
-			if parent ~= FolderOpened then
+			if parent ~= FolderBreadcrumbs.OpenedFolder then
 				elementData.Gui.Parent = nil
 			end
 
@@ -2900,7 +2841,7 @@ function removeAllElements(folderData)
 end
 
 function saveCurrentIndexPath()
-	local indexPath = getIndexPathOfElement(FolderOpened)
+	local indexPath = getIndexPathOfElement(FolderBreadcrumbs.OpenedFolder)
 	plugin:SetSetting(SaveKeys.BytExecutorCurrentDirectory, indexPath)
 end
 
@@ -2932,7 +2873,7 @@ function saveElementList()
 
 	plugin:SetSetting(SaveKeys.BytExecutorList, serializedElementList)
 	
-	if CompiledPreferences.SaveCurrentDirectoryPositionBE and FolderOpened and not IsRunning then
+	if CompiledPreferences.SaveCurrentDirectoryPositionBE and FolderBreadcrumbs.OpenedFolder and not IsRunning then
 		saveCurrentIndexPath()
 	end
 end
@@ -3013,7 +2954,7 @@ end
 
 -- create return API for other apps
 function returnAPI.CreateByt()
-	local bytData = addBytElement(CompiledPreferences.DefaultBytName or "BytScript", FolderOpened)
+	local bytData = addBytElement(CompiledPreferences.DefaultBytName or "BytScript", FolderBreadcrumbs.OpenedFolder)
 
 	if CompiledPreferences.AutomaticallyInsertBytLib then
 		editScriptElementSource(bytData, "local bytLib = require(script.BytLib)\n\n")
@@ -3124,33 +3065,41 @@ end)
 
 ScriptEditorService.TextDocumentDidOpen:Connect(onScriptDocumentOpen)
 
+FolderBreadcrumbs.PathChanged:Connect(function(oldFolderElementData, newFolderElementData)
+	local oldElementList = BytSourcesList
+	local newElementList = BytSourcesList
 
-MouseField:LeftDouble(ParentContainer, function()
-	if not Dragging then
-		if FolderOpened then
-			openFolder(FolderOpened.Parent)
-		else
-			openFolder()
-		end
+	if oldFolderElementData then
+		oldElementList = oldFolderElementData.ElementList
 	end
-end)
 
-MouseField:LeftPress(ParentContainer, function()
-	ParentContainer.BackgroundColor3 = Theme.LightBackground
-end)
-
-MouseField:LeftRelease(ParentContainer, function()
-	ParentContainer.BackgroundColor3 = Theme.InsetHeader
-	
-	if Dragging then
-		onDragSelectedToParent()
-		updateReplicationOrdering()
+	if newFolderElementData then
+		newElementList = newFolderElementData.ElementList
 	end
+
+	if oldElementList == newElementList then
+		return
+	end
+
+	for _, oldElementData in oldElementList do
+		oldElementData.Gui.Parent = nil
+	end
+
+	for _, elementData in newElementList do
+		elementData.Gui.Parent = ElementListFrame
+	end
+
+	Searchbar.PlaceholderText = "Search for element"
+
+	deselectAllElements()
+
+	updateElementVisibility(newFolderElementData)
+	updateScrollSize()
+
+	DirectoryChanged = true
 end)
 
-ParentContainer.MouseLeave:Connect(function()
-	ParentContainer.BackgroundColor3 = Theme.InsetHeader
-end)
+FolderBreadcrumbs.LeftReleasedOnBreadcrumb:Connect(tryDropIntoFolder)
 
 MouseField:RightClick(MoreElementListOptionsButton, function()
 	advancedMenu:ShowAsync()
@@ -3222,7 +3171,7 @@ end)
 Searchbar:GetPropertyChangedSignal("Text"):Connect(function()
 	SearchWord = Searchbar.Text
 
-	updateElementVisibility(FolderOpened)
+	updateElementVisibility(FolderBreadcrumbs.OpenedFolder)
 end)
 
 Searchbar.Focused:Connect(function()
@@ -3254,7 +3203,7 @@ createBytAction.Triggered:Connect(function()
 end)
 
 createFolderAction.Triggered:Connect(function()
-	local folderData = addFolderElement(CompiledPreferences.DefaultFolderName or "Folder", FolderOpened)
+	local folderData = addFolderElement(CompiledPreferences.DefaultFolderName or "Folder", FolderBreadcrumbs.OpenedFolder)
 
 	if CompiledPreferences.AutoRenameElementBE then
 		folderData.Gui.ElementName:CaptureFocus()
@@ -3262,7 +3211,7 @@ createFolderAction.Triggered:Connect(function()
 end)
 
 createSnippetAction.Triggered:Connect(function()
-	local snippetData = addSnippetElement(CompiledPreferences.DefaultSnippetName or "Snippet", FolderOpened)
+	local snippetData = addSnippetElement(CompiledPreferences.DefaultSnippetName or "Snippet", FolderBreadcrumbs.OpenedFolder)
 
 	if CompiledPreferences.AutoRenameElementBE then
 		snippetData.Gui.ElementName:CaptureFocus()
@@ -3318,7 +3267,7 @@ end)
 
 advImport.Triggered:Connect(function()
 	removeImportRedundanciesInHierarchy()
-	loadSerializedElementListInstance(Selection:Get(), FolderOpened)
+	loadSerializedElementListInstance(Selection:Get(), FolderBreadcrumbs.OpenedFolder)
 end)
 
 addLocalBytAction.Triggered:Connect(function()
@@ -3455,15 +3404,6 @@ runLastRanScriptsAction.Triggered:Connect(function()
 	executable:Execute()
 end)
 
-ParentContainer.MouseEnter:Connect(function()
-	ParentContainer.ParentImage.ImageColor3 = Theme.HoverIcon
-end)
-
-ParentContainer.MouseLeave:Connect(function()
-	ParentContainer.ParentImage.ImageColor3 = Theme.NormalIcon
-	ParentContainer.BackgroundColor3 = Theme.InsetHeader
-end)
-
 settings().Studio.ThemeChanged:Connect(function()
 	changeTheme(tostring(settings().Studio.Theme))
 end)
@@ -3504,7 +3444,6 @@ end
 
 if not isReplicationUsable() then
 	local serializedElementList = plugin:GetSetting(SaveKeys.BytExecutorList)
-
 	if serializedElementList then
 		loadSerializedElementList(serializedElementList)
 		

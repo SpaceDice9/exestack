@@ -1,0 +1,8 @@
+{
+  "className": "UIListLayout",
+  "properties": {
+    "FillDirection": "Horizontal",
+    "SortOrder": "LayoutOrder",
+    "VerticalAlignment": "Center"
+  }
+}
