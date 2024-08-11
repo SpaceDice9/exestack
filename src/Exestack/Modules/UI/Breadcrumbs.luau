@@ -2,21 +2,47 @@
 
 -- Implements breadcrumbs and handles state for the opened folder.
 
+type BreadcrumbsImpl = {
+	__index: BreadcrumbsImpl,
+	new: (BreadcrumbsNewParams) -> Breadcrumbs,
+	GetFullPath: (Breadcrumbs) -> string,
+	ChangeTheme: (Breadcrumbs, BreadcrumbsThemeData) -> (),
+	Open: (Breadcrumbs, ElementData) -> (),
+	_createBreadcrumb: (Breadcrumbs, folderElementData: ElementData?, isLast: boolean) -> BreadcrumbPreset,
+}
+type BreadcrumbsFields = {
+	MouseField: any,
+
+	Container: BreadcrumbsContainer,
+	BreadcrumbPreset: BreadcrumbPreset,
+
+	RootName: string,
+	OpenedFolder: ElementData?,
+	
+	PathChanged: any, -- Signal
+	LeftReleasedOnBreadcrumb: any, -- Signal
+
+	_breadcrumbs: {BreadcrumbPreset},
+	_textColor: Color3,
+}
+export type Breadcrumbs = typeof(setmetatable({} :: BreadcrumbsFields, {} :: BreadcrumbsImpl)) 
+
 local SignalModule = require(script.Parent.Parent.SignalModule)
 
-local Breadcrumbs = {}
+local Breadcrumbs: BreadcrumbsImpl = {} :: BreadcrumbsImpl
 Breadcrumbs.__index = Breadcrumbs
 
 type ElementData = any -- TODO: put an actual type later
-type BreadcrumbPreset = TextButton
+export type BreadcrumbsContainer = ScrollingFrame & {
+	UIStroke: UIStroke,
+	Separator: Frame,
+	FolderButton: ImageButton,
+}
+export type BreadcrumbPreset = TextButton
 export type BreadcrumbsNewParams = {
 	MouseField: any,
 	
-	Container: ScrollingFrame & {
-		UIStroke: UIStroke,
-		Separator: Frame,
-		FolderButton: ImageButton,
-	},
+	Container: BreadcrumbsContainer,
 	BreadcrumbPreset: BreadcrumbPreset,
 	
 	RootName: string,
@@ -31,20 +57,13 @@ function Breadcrumbs.new(params: BreadcrumbsNewParams)
 		RootName = params.RootName,
 		OpenedFolder = nil :: ElementData?,
 		
-		_breadcrumbs = {} :: {TextButton},
+		_breadcrumbs = {} :: {BreadcrumbPreset},
 		_textColor = Color3.new(1, 1, 1),
 	}, Breadcrumbs)
 	
 	-- Events
 	self.PathChanged = SignalModule.new() -- args: (oldElementData, newElementData)
 	self.LeftReleasedOnBreadcrumb = SignalModule.new() -- args: (folderElementData)
-	
-	-- For type-checking (so the method types get inferred) 😔
-	if false then
-		self:GetFullPath()
-		self:ChangeTheme({} :: any)
-		self:Open(nil)
-	end
 	
 	-- Create the root breadcrumb
 	self:_createBreadcrumb(nil, false)
