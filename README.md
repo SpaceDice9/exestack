@@ -11,6 +11,7 @@ This plugin was ported using Argon, so you should use it when you are making cha
 
 When submitting changes, make sure to check for the following:
 * **DO NOT LET GUI CHANGES POLLUTE THE `default.project.json` FILE!**
+* Update the [CHANGELOG.md](./CHANGELOG.md), following the convention given by [Keep a Changelog](keepachangelog.com)
 * Verify it works in both light and dark mode, as well as switch between them
 * Verify that all experimental options work with your change
 * Verify that element (that is and not including: byt, folder, snippet, etc...) creation, modification and deletion works as expected.
