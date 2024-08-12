@@ -1,24 +1,28 @@
 {
-  "className": "TextLabel",
+  "className": "TextButton",
   "properties": {
+    "AutomaticSize": "X",
     "BackgroundColor3": [1, 1, 1],
     "BackgroundTransparency": 1,
-    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "BorderColor3": [0.105881, 0.164704, 0.207843],
     "FontFace": {
       "family": "rbxasset://fonts/families/SourceSansPro.json",
       "weight": "Regular",
       "style": "Normal",
       "cachedFaceId": null
     },
+    "LayoutOrder": 1,
     "Position": {
       "UDim2": [[0.0, 40], [0.0, 0]]
     },
+    "RichText": true,
     "Size": {
-      "UDim2": [[1.0, -40], [1.0, 0]]
+      "UDim2": [[0.0, 0], [1.0, 0]]
     },
     "Text": "BS:/",
-    "TextColor3": [0.862745, 0.862745, 0.862745],
+    "TextColor3": [0.862744, 0.862744, 0.862744],
     "TextSize": 16,
+    "TextTransparency": 0.3,
     "TextXAlignment": "Left"
   }
 }
