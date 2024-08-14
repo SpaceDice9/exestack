@@ -286,19 +286,25 @@ local Themes = {
 		NegativeBorder = Color3.fromRGB(255, 255, 255),
 
 		NormalIcon = Color3.fromRGB(210, 210, 210),
-		HoverIcon = Color3.fromRGB(255, 255, 255),
-		NormalByt = Color3.fromRGB(47, 47, 47),
-		HoverByt = Color3.fromRGB(77, 77, 77),
+		HoverIcon = Color3.fromRGB(240, 240, 240),
+		SelectIcon = Color3.fromRGB(255, 255, 255),
+		
+		NormalElement = Color3.fromRGB(47, 47, 47),
+		HoverElement = Color3.fromRGB(66, 66, 66),
+		SelectElement = Color3.fromRGB(11, 90, 175),
 
 		Positive = Color3.fromRGB(0, 220, 0),
 		Neutral = Color3.fromRGB(50, 180, 240),
 		Negative = Color3.fromRGB(230, 70, 70),
 		Other = Color3.fromRGB(255, 85, 255),
+		
+		FolderIcon = Color3.fromRGB(250, 220, 127),
 
 		HiddenByt = Color3.fromRGB(27, 27, 27),
 		DisabledIcon = Color3.fromRGB(100, 100, 100),
 
 		TextColor = Color3.fromRGB(220, 220, 220),
+		SelectTextColor = Color3.fromRGB(255, 255, 255),
 		FadedText = Color3.fromRGB(157, 157, 157),
 	},
 
@@ -312,18 +318,24 @@ local Themes = {
 
 		NormalIcon = Color3.fromRGB(50, 50, 50),
 		HoverIcon = Color3.fromRGB(20, 20, 20),
-		NormalByt = Color3.fromRGB(247, 247, 247),
-		HoverByt = Color3.fromRGB(197, 237, 247),
+		SelectIcon = Color3.fromRGB(255, 255, 255),
+		
+		NormalElement = Color3.fromRGB(247, 247, 247),
+		HoverElement = Color3.fromRGB(228, 238, 254),
+		SelectElement = Color3.fromRGB(104, 148, 217),
 
 		Positive = Color3.fromRGB(40, 200, 40),
 		Neutral = Color3.fromRGB(20, 150, 250),
 		Negative = Color3.fromRGB(230, 70, 70),
 		Other = Color3.fromRGB(220, 85, 220),
+		
+		FolderIcon = Color3.fromRGB(203, 162, 67),
 
 		HiddenByt = Color3.fromRGB(177, 177, 177),
 		DisabledIcon = Color3.fromRGB(160, 160, 160),
 
 		TextColor = Color3.fromRGB(40, 40, 40),
+		SelectTextColor = Color3.fromRGB(255, 255, 255),
 		FadedText = Color3.fromRGB(47, 47, 47),
 	}
 }
@@ -872,25 +884,45 @@ function isReplicationUsable()
 	return (CompiledPreferences.ServerClientExecution and IsRunning)
 end
 
-function changeElementTheme(element, themeData: Theme)
-	element.BackgroundColor3 = themeData.Background
+-- "normal" and nil states are the same
+function changeElementTheme(element, themeData: Theme, state: "hover" | "select" | "normal" | nil)
+	local iconColor =
+		if state == "hover" then themeData.HoverIcon
+		elseif state == "select" then themeData.SelectIcon
+		else themeData.NormalIcon
+	
+	element.BackgroundColor3 =
+		if state == "hover" then themeData.HoverElement
+		elseif state == "select" then themeData.SelectElement
+		else themeData.NormalElement
 
 	element.ConfirmInteractions.BackgroundColor3 = themeData.HiddenByt
-	element.ConfirmInteractions.Confirm.ImageColor3 = themeData.NormalIcon
-	element.ConfirmInteractions.Cancel.ImageColor3 = themeData.NormalIcon
+	element.ConfirmInteractions.Confirm.ImageColor3 = iconColor
+	element.ConfirmInteractions.Cancel.ImageColor3 = iconColor
 
 	element.Warning.TextColor3 = themeData.TextColor
 
 	element.ElementNameBackground.BackgroundColor3 = themeData.InsetHeader
-	element.ElementName.TextColor3 = themeData.TextColor
+	element.ElementName.TextColor3 =
+		if state == "select" then themeData.SelectTextColor
+		else themeData.TextColor
 
-	element.ElementIcon.ImageColor3 = themeData.NormalIcon
-
-	element.SelectionStroke.Color = themeData.NegativeBorder
+	element.ElementIcon.ImageColor3 = 
+		if state ~= "select" then (
+			if element.Name == "Folder_Preset" then themeData.FolderIcon
+			else iconColor
+		) else iconColor
 
 	for _, interactionButton in element.Interactions:GetChildren() do
 		if interactionButton:IsA("ImageButton") then
-			interactionButton.ImageColor3 = themeData.NormalIcon
+			-- Buttons like status don't have visible background because you can't click them
+			if interactionButton.BackgroundTransparency == 1 then
+				interactionButton.ImageColor3 = iconColor
+			else
+				interactionButton.ImageColor3 = themeData.NormalIcon
+				interactionButton.BackgroundColor3 = themeData.LightBackground
+				interactionButton.UIStroke.Color = themeData.LightBorder
+			end
 		end
 	end
 end
@@ -964,27 +996,24 @@ function applyOdeTheme()
 	odeScriptEditor:ApplyStudioTheme(studio)
 end
 
-function selectElement(elementData)
-	if table.find(ElementSelection, elementData) then return end
-	
-	local element = elementData.Gui
-	local elementIcon = element.ElementIcon
+function isElementSelected(elementData: ElementData): boolean
+	return not not table.find(ElementSelection, elementData)
+end
 
+function selectElement(elementData)
+	if isElementSelected(elementData) then return end
+	
 	table.insert(ElementSelection, elementData)
 
-	elementIcon.ImageColor3 = Theme.Neutral
-	element.SelectionStroke.Enabled = CompiledPreferences.SelectionBorderOnElementBE
+	changeElementTheme(elementData.Gui, Theme, "select")
 end
 
 function deselectElement(selectionPosition)
 	local elementData = ElementSelection[selectionPosition]
-	local element = elementData.Gui
-	local elementIcon = element.ElementIcon
 
 	table.remove(ElementSelection, selectionPosition)
 
-	elementIcon.ImageColor3 = Theme.NormalIcon
-	element.SelectionStroke.Enabled = false
+	changeElementTheme(elementData.Gui, Theme, "normal")
 end
 
 function deselectAllElements()
@@ -992,9 +1021,7 @@ function deselectAllElements()
 		local element = elementData.Gui
 		local elementIcon = element.ElementIcon
 
-		elementIcon.ImageColor3 = Theme.NormalIcon
-		element.BackgroundColor3 = Theme.NormalByt
-		element.SelectionStroke.Enabled = false
+		changeElementTheme(elementData.Gui, Theme, "normal")
 	end
 	
 	table.clear(ElementSelection)
@@ -1617,8 +1644,10 @@ function editInteractionsVisible(element, interactionsList)
 	end
 end
 
-function onHover(elementData)
-	elementData.Gui.BackgroundColor3 = Theme.HoverByt
+function onElementHover(elementData)
+	if not isElementSelected(elementData) then
+		changeElementTheme(elementData.Gui, Theme, "hover")
+	end
 
 	local elementState
 
@@ -1633,8 +1662,11 @@ function onHover(elementData)
 	ElementLastHovered = elementData
 end
 
-function onUnhover(elementData)
-	elementData.Gui.BackgroundColor3 = Theme.NormalByt
+function onElementUnhover(elementData)
+	if not isElementSelected(elementData) then
+		changeElementTheme(elementData.Gui, Theme, "normal")
+	end
+	
 	editInteractionsVisible(elementData.Gui, BytElementStates.Unhover)
 	
 	ElementHovering = nil
@@ -1850,7 +1882,7 @@ end
 
 function addEmptyElement(elementPreset, elementType, name, parent)
 	local element = elementPreset:Clone()
-	element.BackgroundColor3 = Theme.NormalByt
+	element.BackgroundColor3 = Theme.NormalElement
 	element.Parent = ElementListFrame
 
 	local interactions = element.Interactions
@@ -1926,12 +1958,16 @@ function addEmptyElement(elementPreset, elementType, name, parent)
 	element.ElementName.Focused:Connect(function()
 		TextboxFocusedOn = element.ElementName
 
+		element.ElementName.TextColor3 = Theme.TextColor
 		element.ElementNameBackground.BackgroundTransparency = 0
 	end)
 
 	element.ElementName.FocusLost:Connect(function()
 		local newName = element.ElementName.Text
 		
+		element.ElementName.TextColor3 = 
+			if isElementSelected(newElementData) then Theme.SelectTextColor
+			else Theme.TextColor
 		element.ElementNameBackground.BackgroundTransparency = 1
 		TextboxFocusedOn = nil
 		
@@ -1966,11 +2002,11 @@ function addEmptyElement(elementPreset, elementType, name, parent)
 	end)
 
 	element.MouseEnter:Connect(function()
-		onHover(newElementData)
+		onElementHover(newElementData)
 	end)
 
 	element.MouseLeave:Connect(function()
-		onUnhover(newElementData)
+		onElementUnhover(newElementData)
 	end)
 
 	createFeedbackForIcons(interactions.Export, "Neutral", "NormalIcon")

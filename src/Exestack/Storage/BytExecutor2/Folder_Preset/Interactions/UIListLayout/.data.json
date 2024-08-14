@@ -4,7 +4,7 @@
     "FillDirection": "Horizontal",
     "HorizontalAlignment": "Right",
     "Padding": {
-      "UDim": [0.0, 1]
+      "UDim": [0.0, 4]
     },
     "SortOrder": "LayoutOrder",
     "VerticalAlignment": "Center"
