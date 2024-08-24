@@ -287,7 +287,8 @@ local Themes = {
 
 		NormalIcon = Color3.fromRGB(210, 210, 210),
 		HoverIcon = Color3.fromRGB(240, 240, 240),
-		SelectIcon = Color3.fromRGB(255, 255, 255),
+		SelectIcon = Color3.fromRGB(240, 240, 240),
+		SelectHoverIcon = Color3.fromRGB(255, 255, 255),
 		
 		NormalElement = Color3.fromRGB(47, 47, 47),
 		HoverElement = Color3.fromRGB(66, 66, 66),
@@ -318,7 +319,8 @@ local Themes = {
 
 		NormalIcon = Color3.fromRGB(50, 50, 50),
 		HoverIcon = Color3.fromRGB(20, 20, 20),
-		SelectIcon = Color3.fromRGB(255, 255, 255),
+		SelectIcon = Color3.fromRGB(240, 240, 240),
+		SelectHoverIcon = Color3.fromRGB(255, 255, 255),
 		
 		NormalElement = Color3.fromRGB(247, 247, 247),
 		HoverElement = Color3.fromRGB(228, 238, 254),
@@ -915,14 +917,8 @@ function changeElementTheme(element, themeData: Theme, state: "hover" | "select"
 
 	for _, interactionButton in element.Interactions:GetChildren() do
 		if interactionButton:IsA("ImageButton") then
-			-- Buttons like status don't have visible background because you can't click them
-			if interactionButton.BackgroundTransparency == 1 then
-				interactionButton.ImageColor3 = iconColor
-			else
-				interactionButton.ImageColor3 = themeData.NormalIcon
-				interactionButton.BackgroundColor3 = themeData.LightBackground
-				interactionButton.UIStroke.Color = themeData.LightBorder
-			end
+			interactionButton.ImageColor3 = iconColor
+			interactionButton:SetAttribute("Selected", state == "select")
 		end
 	end
 end
@@ -1618,13 +1614,34 @@ function callExecuteInModel(model, loadedScript)
 	end
 end
 
-function createFeedbackForIcons(icon : ImageButton, hoverName, unhoverName)
+-- Interaction buttons have an attribute called "Selected" added to them so that they know what color to display.
+-- This attribute is provided in the `changeElementTheme` function.
+function createFeedbackForIcons(
+	icon : ImageButton,
+	hoverName: string?, unhoverName: string?,
+	selectedHoverName: string?, selectedUnhoverName: string?
+)
+	if selectedHoverName == nil then
+		selectedHoverName = "SelectHoverIcon"
+	end
+	if selectedUnhoverName == nil then
+		selectedUnhoverName = "SelectIcon"
+	end
+	
 	icon.MouseEnter:Connect(function()
-		icon.ImageColor3 = Theme[hoverName]
+		if icon:GetAttribute("Selected") and selectedHoverName then
+			icon.ImageColor3 = Theme[selectedHoverName]
+		else
+			icon.ImageColor3 = Theme[hoverName]
+		end
 	end)
 
 	icon.MouseLeave:Connect(function()
-		icon.ImageColor3 = Theme[unhoverName]
+		if icon:GetAttribute("Selected") and selectedUnhoverName then
+			icon.ImageColor3 = Theme[selectedUnhoverName]
+		else
+			icon.ImageColor3 = Theme[unhoverName]
+		end
 	end)
 end
 
