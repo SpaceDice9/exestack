@@ -1,18 +1,3 @@
-> NOTE: For Exestack's BytExecutor, there are several principles it must adhere to in decreasing priority
-
-* Minimal clutter: The UI must contain as little clutter as possible. It can't be overflowing with widgets and buttons to click
-  * Minimal actions: Most actions should be as few actions away as possible
-  * Less used actions should never be more than two actions away
-  * Commonly used actions should be a single action away
-
-* High density: The UI should hold as much data as it can without clutter
-
-* Intuitive: Most elements should be self-explanatory or have a tooltip for anything not obvious
-
-* Elegance: The UI should look pretty when possible
-
-___
-
 ### Future (0.X.X)
 * Remove clone option
 * Use more explicit dependency injection
