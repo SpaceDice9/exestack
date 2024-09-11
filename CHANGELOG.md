@@ -14,117 +14,117 @@
 ## 0.4.3
 
 ### Removed
-* Remove execution control (DONE)
-* Remove update checking (DONE)
-* Remove options for above (DONE)
+* Remove execution control
+* Remove update checking
+* Remove options for above
 * Remove bad terms in fast lexer
 
 ## 0.4.2
 
 ### Added
-* Add more types to ExportToModule (DONE)
-  * CFrame (DONE)
-  * UDim2 (DONE)
-  * UDim (DONE)
-  * Enum (DONE)
-  * NumberSequence (DONE)
-  * NumberSequenceKeypoint (DONE)
-  * NumberRange (DONE)
-  * ColorSequence (DONE)
-  * ColorSequenceKeypoint (DONE)
-* Add clone as additional option (DONE)
+* Add more types to ExportToModule
+  * CFrame
+  * UDim2
+  * UDim
+  * Enum
+  * NumberSequence
+  * NumberSequenceKeypoint
+  * NumberRange
+  * ColorSequence
+  * ColorSequenceKeypoint
+* Add clone as additional option
 
 ### Changed
-* Add semantic improvements for better human readability (DONE)
-  * Hide number indices for gapless arrays (DONE)
-  * Simplify table indices when they are valid variable names (DONE)
+* Add semantic improvements for better human readability
+  * Hide number indices for gapless arrays
+  * Simplify table indices when they are valid variable names
 
 ### Fixed
-* Fix ExportToModule (ETM) not exporting vector3s properly (DONE)
-* Fix ETM not exporting colors properly (DONE)
-* Slightly optimized ETM (DONE)
-* Add type annotations to some BytLib functions (DONE)
-* Update About page (DONE)
+* Fix ExportToModule (ETM) not exporting vector3s properly
+* Fix ETM not exporting colors properly
+* Slightly optimized ETM
+* Add type annotations to some BytLib functions
+* Update About page
 
 ## 0.4.1
 ### Changed
-* Update OSE to latest version (DONE)
+* Update OSE to latest version
 
 ## 0.4.0
 
 ### Added
-* Add support ko-fi page (DONE)
-* Add prompt message (DONE)
-* Add new local byt (DONE)
+* Add support ko-fi page
+* Add prompt message
+* Add new local byt
 
 ### Fixed
-* Fix issue where rename menu is shown under generic advanced menu (DONE)
-* Let replication use correct order in editing during playtesting (DONE)
-* Small codebase improvements (DONE)
-* Make S/C Execution related if statements clearer (DONE)
-* Update copyright (DONE)
-* Fix status update not properly displaying after waiting in a byt script (DONE)
-* Update API doc (DONE)
+* Fix issue where rename menu is shown under generic advanced menu
+* Let replication use correct order in editing during playtesting
+* Small codebase improvements
+* Make S/C Execution related if statements clearer
+* Update copyright
+* Fix status update not properly displaying after waiting in a byt script
+* Update API doc
 
 ## Older
-* Add proper selection box functionality (DONE)
-* Try adding execution control (DONE?)
-* Add tooltips (DONE)
-* Add a simple tutorial (DONE?)
-* Add confirmation before delete (DONE)
-* Add quick server/client execution (DONE?)
-* Responsive UI (DONE?)
-* Refresh button (fixes replication folder stuff) (DONE)
-* Switch right and left click for plus icon (DONE)
-* Make it so right-clicking doesn't deselect everything (DONE)
-* Prevent user from making an empty name (DONE)
-* Make slashes consistent (DONE)
-* Fix folder export not working (DONE)
-* Make BE2 icon toggle rather than enable (DONE)
-* Shorten time needed to drag (DONE)
-* Fix replication attempting on snippets (DONE)
-* Fix documents not opening (DONE)
-* Rojo support (DONE)
-* Better folder search (DONE)
-* Improved Ode (DONE)
-* Fix issue where settings scales improperly (DONE)
-* Add option to use new script context (DONE)
-* Add new importing/exporting options (DONE)
-* Refactor preferences because it hasn't changed since BE1 (DONE)
-* Fixed issue where options would fail to clean up unused options (DONE)
-* Fix issue where true size isnt used (DONE)
-* Fix issue where setting for new byt name allows spaces (DONE)
-* Add new export instance (DONE)
-* Add new import data (DONE)
-* Add update checker (DONE)
-* Add backup folder (DONE)
-  * Stored in ServerStorage (DONE)
-* Add Load Last Saved Backup option (DONE)
-* Improve internal codebase (DONE?)
-  * Replace some function with YieldCurrentThread (DONE)
-  * Improve performance by not loading model if update checking was disabled (DONE)
-  * Improve naming (DONE)
-  * Replace custom func with gsub (DONE)
-  * Move some stuff to Util (DONE)
-* Add BytLib:Require(string) (DONE)
-* Add ability to edit and save scripts even while playtesting and S/C is enabled (DONE?)
-* Add Enable Debug Options (DONE)
-* Add option to swap functionality on plus icon (DONE)
-* Add option to enable select elements that were prev dragged after opening folder (DONE)
-* Add option whether to open folder that was dragged in (DONE)
-* Add ForceUniqueNames (DONE)
-  * Forces unique names when adding or renaming element (DONE)
-* Increase min size of Preferences (DONE)
-* Save where you left off in the directory (DONE)
-* Replace backslash with forward slashes (DONE)
-* Patch issue where things didnt auto-indent for function Foo.bar() (DONE)
-* Add heavy saving (DONE)
-* Make parent element more responsive when hovering (DONE)
-* Add default names for other element types (DONE)
-* Replace spaces in imported script with underscores (DONE)
-* Test if SF call degrades performance (Nothing found)
-* Allow building/viewing source code (DONE?)
-* Add SharedTable and other blue names (DONE)
-* Improve ClickFields (DONE)
-  * Fix bugs related to click inputs (DONE)
-* Make parent element more responsive when clicking (DONE)
+* Add proper selection box functionality
+* Try adding execution control
+* Add tooltips
+* Add a simple tutorial
+* Add confirmation before delete
+* Add quick server/client execution
+* Responsive UI
+* Refresh button (fixes replication folder stuff)
+* Switch right and left click for plus icon
+* Make it so right-clicking doesn't deselect everything
+* Prevent user from making an empty name
+* Make slashes consistent
+* Fix folder export not working
+* Make BE2 icon toggle rather than enable
+* Shorten time needed to drag
+* Fix replication attempting on snippets
+* Fix documents not opening
+* Rojo support
+* Better folder search
+* Improved Ode
+* Fix issue where settings scales improperly
+* Add option to use new script context
+* Add new importing/exporting options
+* Refactor preferences because it hasn't changed since BE1
+* Fixed issue where options would fail to clean up unused options
+* Fix issue where true size isnt used
+* Fix issue where setting for new byt name allows spaces
+* Add new export instance
+* Add new import data
+* Add update checker
+* Add backup folder
+  * Stored in ServerStorage
+* Add Load Last Saved Backup option
+* Improve internal codebase
+  * Replace some function with YieldCurrentThread
+  * Improve performance by not loading model if update checking was disabled
+  * Improve naming
+  * Replace custom func with gsub
+  * Move some stuff to Util
+* Add BytLib:Require(string)
+* Add ability to edit and save scripts even while playtesting and S/C is enabled
+* Add Enable Debug Options
+* Add option to swap functionality on plus icon
+* Add option to enable select elements that were prev dragged after opening folder
+* Add option whether to open folder that was dragged in
+* Add ForceUniqueNames
+  * Forces unique names when adding or renaming element
+* Increase min size of Preferences
+* Save where you left off in the directory
+* Replace backslash with forward slashes
+* Patch issue where things didnt auto-indent for function Foo.bar()
+* Add heavy saving
+* Make parent element more responsive when hovering
+* Add default names for other element types
+* Replace spaces in imported script with underscores
+* Test if SF call degrades performance
+* Allow building/viewing source code
+* Add SharedTable and other blue names
+* Improve ClickFields
+  * Fix bugs related to click inputs
+* Make parent element more responsive when clicking
