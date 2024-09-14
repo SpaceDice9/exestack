@@ -1,21 +1,3 @@
 {
-  "className": "TextLabel",
-  "properties": {
-    "BackgroundTransparency": 1,
-    "BorderColor3": [0.105882, 0.164705, 0.207843],
-    "FontFace": {
-      "family": "rbxasset://fonts/families/Inconsolata.json",
-      "weight": "Regular",
-      "style": "Normal",
-      "cachedFaceId": null
-    },
-    "RichText": true,
-    "Size": {
-      "UDim2": [[1.0, 0], [0.0, 14]]
-    },
-    "TextColor3": [0.8, 0.8, 0.8],
-    "TextSize": 14,
-    "TextXAlignment": "Left",
-    "ZIndex": 5
-  }
+  "className": "TextLabel"
 }

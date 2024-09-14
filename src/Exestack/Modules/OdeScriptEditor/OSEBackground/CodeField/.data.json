@@ -1,28 +1,3 @@
 {
-  "className": "TextBox",
-  "properties": {
-    "BackgroundTransparency": 1,
-    "BorderColor3": [0.105882, 0.164705, 0.207843],
-    "ClearTextOnFocus": false,
-    "ClipsDescendants": true,
-    "FontFace": {
-      "family": "rbxasset://fonts/families/Inconsolata.json",
-      "weight": "Regular",
-      "style": "Normal",
-      "cachedFaceId": null
-    },
-    "MultiLine": true,
-    "Position": {
-      "UDim2": [[0.0, 25], [0.0, 5]]
-    },
-    "Size": {
-      "UDim2": [[1.0, -30], [1.0, -10]]
-    },
-    "Text": "",
-    "TextColor3": [0.8, 0.8, 0.8],
-    "TextSize": 14,
-    "TextTransparency": 0.5,
-    "TextXAlignment": "Left",
-    "TextYAlignment": "Top"
-  }
+  "className": "TextBox"
 }
