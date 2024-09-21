@@ -7,6 +7,7 @@
 
 ### Changed
 * Fixed tooltips sometimes being cutoff.
+* Updated Ode Script Editor to latest version
 
 ### Removed
 * Parent button replaced with breadcrumbs.
