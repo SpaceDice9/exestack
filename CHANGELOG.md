@@ -8,6 +8,7 @@
 ### Changed
 * Fixed tooltips sometimes being cutoff.
 * Updated Ode Script Editor to latest version
+* Changed element hover and selected styles to be more similar to Studio's.
 
 ### Removed
 * Parent button replaced with breadcrumbs.

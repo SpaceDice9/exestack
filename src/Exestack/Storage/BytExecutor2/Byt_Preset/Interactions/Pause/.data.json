@@ -7,9 +7,11 @@
         "String": "Running"
       }
     },
+    "AutoButtonColor": false,
     "BackgroundColor3": [0.654901, 0.654901, 0.654901],
     "BackgroundTransparency": 1,
-    "BorderColor3": [0.105882, 0.164705, 0.207843],
+    "BorderColor3": [0.105881, 0.164704, 0.207843],
+    "BorderSizePixel": 0,
     "Image": "rbxassetid://10734919336",
     "ImageColor3": [0.823529, 0.823529, 0.823529],
     "LayoutOrder": 1,
