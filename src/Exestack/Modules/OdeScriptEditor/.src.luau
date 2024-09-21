@@ -1,5 +1,5 @@
 local Modules = script.Modules
-local FastLexer = require(Modules.fastlexer)
+local Lexer = require(Modules.lexer)
 local LuaTable = require(Modules.LuaTable)
 local SignalModule = require(Modules.SignalModule)
 local GetTextBoxScrolling = require(Modules.GetTextBoxScrolling)
@@ -175,6 +175,7 @@ local function iterateThruAndReplace(str, pattern, replacement)
 	return cleanStr
 end
 
+--https://stackoverflow.com/questions/51181222/lua-trailing-space-removal
 local function trimWhitespace(str)
 	return string.gsub(str, '^%s*(.-)%s*$', '%1')
 end
@@ -185,18 +186,14 @@ local function getTrueTokenData(i, tokenData, scanData)
 
 	local token = tokenData.token
 
-	if token == "identifier" then
+	if token == "iden" then
 		local prevIndexData = scanData[i - 2]
 
 		if prevTokenData and prevTokenData.src == "." then
-			if prevIndexData and lib_methods[prevIndexData.src] then
-				return "builtin"
-			else
-				token = "lprop"
-			end
+			token = "lprop"
 		end
 
-		if nextTokenData and nextTokenData.src:match("%(") then
+		if nextTokenData and (nextTokenData.src:match("^%(") or nextTokenData.src:match("^{") or nextTokenData.src:match("^\"") or nextTokenData.src:match("^\'") or nextTokenData.src:match("%[%[")) then
 			if prevTokenData and prevTokenData.src == "." then
 				token = "lmethod"
 			else
@@ -243,7 +240,7 @@ local function colorify(code, theme)
 	local size = code:len()
 	local increase = 0
 
-	local scanData = FastLexer.scan(code)
+	local scanData = Lexer.run(code)
 
 	for i, tokenData in scanData do
 		local token = tokenData.token
@@ -254,11 +251,6 @@ local function colorify(code, theme)
 		if colorData then
 			local trim = tokenData.trim
 			local src = tokenData.src
-
-			--takes care of strange bug where given trim is larger than reality
-			if tokenData.token == "string" and not (string.match(src, '%b""') or string.match(src, "%b''") or string.match(src, "%b``")) then
-				trim -= 1
-			end
 
 			local End = trim - 1 + increase
 			local Start = trim - src:len() + increase
@@ -288,6 +280,42 @@ local function rawEditCodeField(scriptEditor, text)
 	end)
 end
 
+local function fixCodeFieldLines(scriptEditor, originalSize)
+	local codeField = scriptEditor.Background.CodeField
+	local newCode = codeField.Text
+
+	if scriptEditor.VisibleLines > originalSize then
+		for i = originalSize + 1, scriptEditor.VisibleLines do
+			local line = scriptEditor.SourceData.Code[scriptEditor.LineFocused + i - 1]
+
+			if i > scriptEditor.SourceData.Size then
+				break
+			end
+
+			if not line then
+				break
+			end
+
+			newCode ..= "\n" .. line
+		end
+	elseif scriptEditor.VisibleLines < originalSize then
+		local lines = string.split(newCode, "\n")
+		local replacementText = lines[1] or ""
+
+		for i = 2, scriptEditor.VisibleLines do
+			if i + scriptEditor.LineFocused - 1 > scriptEditor.SourceData.Size then
+				break
+			end
+
+			replacementText = replacementText .. "\n" .. (lines[i] or "")
+		end
+
+		newCode = replacementText
+	end
+
+	return newCode
+end
+
 local function declareCurrentTextSize(scriptEditor, textWidth)
 	local codeField = scriptEditor.Background.CodeField
 	local richOverlayContainer = scriptEditor.Background.RichOverlayContainer
@@ -303,7 +331,10 @@ local function declareCurrentTextSize(scriptEditor, textWidth)
 	codeField.Size = newSize
 	richOverlayContainer.Size = newSize
 
+	local originalSize = scriptEditor.VisibleLines
+
 	recountVisibleLines(scriptEditor)
+	codeField.Text = fixCodeFieldLines(scriptEditor, originalSize)
 end
 
 local function moveShiftContainer(scriptEditor)
@@ -313,6 +344,38 @@ local function moveShiftContainer(scriptEditor)
 
 	scriptEditor.ScrollingShift = GetTextBoxScrolling.UpdateShift(codeField, codeField.CursorPosition, scriptEditor.ScrollingShift)
 	shiftContainer.Position = UDim2.new(0, -scriptEditor.ScrollingShift, 0, 0)
+end
+
+local function updateLines(scriptEditor)
+	local lineNumbers = {}
+
+	local visibleCodeLines = {}
+	table.move(scriptEditor.SourceData.Code, scriptEditor.LineFocused, scriptEditor.LineFocused + scriptEditor.VisibleLines, 1, visibleCodeLines)
+
+	for i = 1, scriptEditor.VisibleLines + 1 do
+		local line = scriptEditor.SourceData.Code[scriptEditor.LineFocused + i - 1]--lines[i]
+
+		if not line then
+			break
+		end
+
+		table.insert(lineNumbers, i + scriptEditor.LineFocused - 1)
+	end
+
+	local visibleCodeSegment = table.concat(visibleCodeLines, "\n")
+
+	scriptEditor.Background.LineNumberContainer.LineNumber.Text = table.concat(lineNumbers, "\n")
+	scriptEditor.Background.RichOverlayContainer.ShiftContainer.RichOverlayLabel.Text = colorify(tabsToSpaces(visibleCodeSegment), scriptEditor.Theme)
+end
+
+local function getSortedHookModules()
+	local hookModules = script.Hooks:GetChildren()
+
+	table.sort(hookModules, function(a, b)
+		return require(a).RunOrder < require(b).RunOrder
+	end)
+
+	return hookModules
 end
 
 local function onCodeFieldEdit(scriptEditor)
@@ -328,21 +391,11 @@ local function onCodeFieldEdit(scriptEditor)
 	local newText = codeField.Text
 	local lines = string.split(newText, "\n")
 
-	for _, lineNumberLabel in background.LineNumberContainer:GetChildren() do
-		if lineNumberLabel:IsA("TextLabel") then
-			lineNumberLabel:Destroy()
-		end
-	end
-
-	for _, richOverlayLabel in background.RichOverlayContainer.ShiftContainer:GetChildren() do
-		if richOverlayLabel:IsA("TextLabel") then
-			richOverlayLabel:Destroy()
-		end
-	end
+	local finalRawCode = newText
 
 	task.defer(function()
 		local lineNumberWidth = 6*math.ceil(math.log10(#scriptEditor.SourceData.Code + .1))
-		background.LineNumberContainer.Size = UDim2.new(0, lineNumberWidth + 6, 1, -10)
+		background.LineNumberContainer.Size = UDim2.new(0, lineNumberWidth + 3, 1, -10)
 		background.LineNumberBackground.Size = UDim2.new(0, lineNumberWidth + 6, 1, 0)
 
 		codeField.Position = UDim2.new(0, lineNumberWidth + 9, 0, 5)
@@ -358,54 +411,12 @@ local function onCodeFieldEdit(scriptEditor)
 	scriptEditor.SourceData:Write(scriptEditor.LineFocused, scriptEditor.VisibleLines, luaArray)
 	scriptEditor.RawSource = scriptEditor.SourceData:ToString()
 
-	local finalRawCode = newText
+	updateLines(scriptEditor)
 
-	for i = 1, scriptEditor.VisibleLines do
-		local line = scriptEditor.SourceData.Code[scriptEditor.LineFocused + i - 1]--lines[i]
+	local originalSize = scriptEditor.VisibleLines
+	finalRawCode = fixCodeFieldLines(scriptEditor, #lines)
 
-		if not line then
-			break
-		end
-
-		local lineNumberLabel = Storage.LineNumber:Clone()
-		lineNumberLabel.Text = i + scriptEditor.LineFocused - 1
-		lineNumberLabel.LayoutOrder = i
-		lineNumberLabel.Parent = background.LineNumberContainer
-
-		local untabbedLine = tabsToSpaces(line)
-		local enrichedLine = colorify(untabbedLine--[[escapeRich(untabbedLine)]], scriptEditor.Theme)
-		local richTextOverlay = Storage.RichOverlayLabel:Clone()
-		richTextOverlay.Text = enrichedLine
-		richTextOverlay.LayoutOrder = i
-		richTextOverlay.Parent = background.RichOverlayContainer.ShiftContainer
-	end
-
-	if #lines < scriptEditor.VisibleLines then
-		for i = #lines + 1, scriptEditor.VisibleLines do
-			local line = scriptEditor.SourceData.Code[scriptEditor.LineFocused + i - 1]
-
-			if not line then
-				break
-			end
-
-			local untabbedLine = line--tabsToSpaces(line)
-			finalRawCode = finalRawCode .. "\n" .. untabbedLine
-		end
-	elseif #lines > scriptEditor.VisibleLines then
-		local replacementText = lines[1]
-
-		for i = 2, scriptEditor.VisibleLines do
-			replacementText = replacementText .. "\n" .. lines[i]
-		end
-
-		finalRawCode = replacementText
-	end
-
-	local hookModules = script.Hooks:GetChildren()
-
-	table.sort(hookModules, function(a, b)
-		return a:GetAttribute("RunOrder") < b:GetAttribute("RunOrder")
-	end)
+	local hookModules = getSortedHookModules()
 
 	local data = {
 		Code = finalRawCode,
@@ -416,7 +427,7 @@ local function onCodeFieldEdit(scriptEditor)
 
 	--runs thru hooks and runs their custom behavior
 	--postprocessing code
-	for _, hookModule in script.Hooks:GetChildren() do
+	for _, hookModule in hookModules do
 		local method = require(hookModule)["OnScriptChange"]
 
 		if method then
@@ -440,31 +451,6 @@ local function onCodeFieldEdit(scriptEditor)
 	scriptEditor.DisplayCode = finalRawCode
 end
 
-local function addLinesAfterResize(scriptEditor, originalSize)
-	local background = scriptEditor.Background
-
-	for i = originalSize + 1, scriptEditor.VisibleLines do
-		local line = scriptEditor.SourceData.Code[scriptEditor.LineFocused + i - 1]
-
-		if not line then
-			break
-		end
-
-		local lineNumberLabel = Storage.LineNumber:Clone()
-		lineNumberLabel.Text = i + scriptEditor.LineFocused - 1
-		lineNumberLabel.LayoutOrder = i
-		lineNumberLabel.Parent = background.LineNumberContainer
-
-		local enrichedLine = colorify(tabsToSpaces(line), scriptEditor.Theme)
-		local richTextOverlay = Storage.RichOverlayLabel:Clone()
-		richTextOverlay.Text = enrichedLine
-		richTextOverlay.LayoutOrder = i
-		richTextOverlay.Parent = background.RichOverlayContainer.ShiftContainer
-
-		rawEditCodeField(scriptEditor, scriptEditor.Background.CodeField.Text .. "\n" .. line--[[tabsToSpaces(line)]])
-	end
-end
-
 local function repack(t, separator)
 	local str = t[1]
 
@@ -479,38 +465,27 @@ local function repack(t, separator)
 	return str
 end
 
-local function removeLinesAfterResize(scriptEditor, originalSize)
-	local background = scriptEditor.Background
-
-	for _, richTextOverlay in background.RichOverlayContainer.ShiftContainer:GetChildren() do
-		if richTextOverlay:IsA("TextLabel") then
-			if richTextOverlay.LayoutOrder > scriptEditor.VisibleLines then
-				richTextOverlay:Destroy()
-			end
-		end
-	end
-
-	for _, lineNumberLabel in background.LineNumberContainer:GetChildren() do
-		if lineNumberLabel:IsA("TextLabel") then
-			if lineNumberLabel.LayoutOrder > scriptEditor.VisibleLines then
-				lineNumberLabel:Destroy()
-			end
-		end
-	end
-
-	local lines = string.split(background.CodeField.Text, "\n")
-
-	for i = scriptEditor.VisibleLines + 1, originalSize do
-		lines[i] = nil
-	end
-
-	rawEditCodeField(scriptEditor, repack(lines, "\n"))
-end
-
 function recountVisibleLines(scriptEditor)
 	local visibleLines = math.floor(scriptEditor.Background.CodeField.AbsoluteSize.Y/14)
 
 	scriptEditor.VisibleLines = visibleLines
+end
+
+function getLastSelectedString(scriptEditor)
+	local codeField = scriptEditor.Background.CodeField
+
+	scriptEditor._LastCursorPosition = codeField.CursorPosition
+	scriptEditor._LastSelectionStart = codeField.SelectionStart
+
+	local start = math.min(scriptEditor._LastCursorPosition, scriptEditor._LastSelectionStart)
+	local finish = math.max(scriptEditor._LastCursorPosition, scriptEditor._LastSelectionStart, 1) - 1
+
+	if start == -1 then
+		start = finish + 1
+	end
+
+	scriptEditor._LastSelectedString = string.sub(codeField.Text, start, finish)
+	scriptEditor._LastPreviousChar = string.sub(codeField.Text, start - 1, start - 1)
 end
 
 function OdeScriptEditor:ApplyTheme(odeThemeData)
@@ -587,7 +562,7 @@ function OdeScriptEditor:JumpTo(lineNumber: number)
 	end
 end
 
-function OdeScriptEditor:LoadStringAsync(str: string, lineNumber: number)
+function OdeScriptEditor:SetStringAsync(str: string, lineNumber: number)
 	self.Background.CodeField.Visible = false
 	self.Background.RichOverlayContainer.Visible = false
 	self.Background.LineNumberContainer.Visible = false
@@ -606,12 +581,12 @@ function OdeScriptEditor:LoadStringAsync(str: string, lineNumber: number)
 	end)
 end
 
-function OdeScriptEditor:LoadScriptAsync(scriptObject: LuaSourceContainer, lineNumber: number)
-	self:LoadStringAsync(scriptObject.Source, lineNumber)
+function OdeScriptEditor:SetScriptAsync(scriptObject: LuaSourceContainer, lineNumber: number)
+	self:SetStringAsync(scriptObject.Source, lineNumber)
 end
 
 function OdeScriptEditor:Unload()
-	self:LoadStringAsync("")
+	self:SetStringAsync("")
 end
 
 function OdeScriptEditor:ReadOnly(allowEditing: boolean?)
@@ -631,12 +606,18 @@ function OdeScriptEditor.Embed(frame: GuiBase2d)
 		VisibleLines = 1,
 		OutputScript = nil,
 
+		-- used by AutoWrap
+		AutoWrapEnabled = false,
 		ScrollingShift = 0,
+		Destroyed = false,
 
 		OnEdit = SignalModule.new(),
 
 		Theme = OdeDefaultTheme,
 	}
+
+	Storage.LineNumber:Clone().Parent = background.LineNumberContainer
+	Storage.RichOverlayLabel:Clone().Parent = background.RichOverlayContainer.ShiftContainer
 
 	setmetatable(scriptEditor, OdeScriptEditor)
 
@@ -654,21 +635,17 @@ function OdeScriptEditor.Embed(frame: GuiBase2d)
 		local originalSize = scriptEditor.VisibleLines
 
 		recountVisibleLines(scriptEditor)
+		codeField.Text = fixCodeFieldLines(scriptEditor, originalSize)
 
-		local newSize = scriptEditor.VisibleLines
-
-		if newSize > originalSize then
-			addLinesAfterResize(scriptEditor, originalSize)
-		elseif newSize < originalSize then
-			removeLinesAfterResize(scriptEditor, originalSize)
-		end
+		updateLines(scriptEditor)
 
 		task.defer(moveShiftContainer, scriptEditor)
 	end)
 
 	codeField.InputChanged:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseWheel then
-			local newLineFocused = math.clamp(scriptEditor.LineFocused - input.Position.Z*3, 1, #string.split(scriptEditor.RawSource, "\n"))
+			local roundZ = math.round(input.Position.Z)
+			local newLineFocused = math.clamp(scriptEditor.LineFocused - roundZ*3, 1, #string.split(scriptEditor.RawSource, "\n"))
 
 			codeField:ReleaseFocus()
 
@@ -676,7 +653,15 @@ function OdeScriptEditor.Embed(frame: GuiBase2d)
 		end
 	end)
 
-	scriptEditor:LoadStringAsync("")
+	for _, hookModule in getSortedHookModules() do
+		local method = require(hookModule)["OnScriptEditorInstantiation"]
+
+		if method then
+			method(scriptEditor)
+		end
+	end
+
+	scriptEditor:SetStringAsync("")
 
 	return scriptEditor
 end
@@ -684,6 +669,17 @@ end
 function OdeScriptEditor:Relocate(newFrame: GuiBase2d)
 	local background = self.Background
 	background.Parent = newFrame
+end
+
+function OdeScriptEditor:Destroy()
+	if self.Destroyed then
+		return
+	end
+
+	self.Destroyed = true
+
+	self.Background:Destroy()
+	self.OnEdit:DisconnectAll()
 end
 
 return OdeScriptEditor

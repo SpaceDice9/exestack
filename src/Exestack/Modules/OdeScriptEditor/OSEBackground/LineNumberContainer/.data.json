@@ -2,13 +2,8 @@
   "className": "Frame",
   "properties": {
     "BackgroundTransparency": 1,
-    "BorderColor3": [0.105882, 0.164705, 0.207843],
-    "Position": {
-      "UDim2": [[0.0, 0], [0.0, 5]]
-    },
-    "Size": {
-      "UDim2": [[0.0, 16], [1.0, -10]]
-    },
+    "Position": [[0.0, 0.0], [0.0, 5.0]],
+    "Size": [[0.0, 16.0], [1.0, -10.0]],
     "ZIndex": 2
   }
 }

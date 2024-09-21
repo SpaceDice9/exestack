@@ -2673,7 +2673,7 @@ function openScript(scriptObject, lineNumber)
 		Util.ForceWidgetOpen(OdeWidget)
 
 		odeScriptEditor.OutputScript = scriptObject
-		odeScriptEditor:LoadStringAsync(scriptObject.Source, lineNumber)
+		odeScriptEditor:SetStringAsync(scriptObject.Source, lineNumber)
 	else
 		if lineNumber then
 			plugin:OpenScript(scriptObject, lineNumber)
