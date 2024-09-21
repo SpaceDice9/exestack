@@ -1,3 +1,9 @@
 {
-  "className": "Frame"
+  "className": "Frame",
+  "properties": {
+    "BackgroundTransparency": 1,
+    "Position": [[0.0, 0.0], [0.0, 5.0]],
+    "Size": [[0.0, 16.0], [1.0, -10.0]],
+    "ZIndex": 2
+  }
 }

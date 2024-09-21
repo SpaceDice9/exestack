@@ -1,3 +1,8 @@
 {
-  "className": "Frame"
+  "className": "Frame",
+  "properties": {
+    "Active": true,
+    "BackgroundTransparency": 1,
+    "Size": [[3.0, 0.0], [1.0, 0.0]]
+  }
 }

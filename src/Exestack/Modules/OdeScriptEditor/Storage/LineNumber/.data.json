@@ -1,3 +1,18 @@
 {
-  "className": "TextLabel"
+  "className": "TextLabel",
+  "properties": {
+    "AutomaticSize": "XY",
+    "BackgroundTransparency": 1,
+    "FontFace": {
+      "family": "rbxasset://fonts/families/SourceSansPro.json",
+      "weight": "Regular",
+      "style": "Normal",
+      "cachedFaceId": null
+    },
+    "Size": [[1.0, -6.0], [0.0, 0.0]],
+    "TextColor3": [0.8, 0.8, 0.8],
+    "TextSize": 14,
+    "TextXAlignment": "Right",
+    "ZIndex": 5
+  }
 }

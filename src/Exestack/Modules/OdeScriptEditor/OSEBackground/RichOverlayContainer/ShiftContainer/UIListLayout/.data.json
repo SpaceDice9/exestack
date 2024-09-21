@@ -1,3 +1,6 @@
 {
-  "className": "UIListLayout"
+  "className": "UIListLayout",
+  "properties": {
+    "SortOrder": "LayoutOrder"
+  }
 }
