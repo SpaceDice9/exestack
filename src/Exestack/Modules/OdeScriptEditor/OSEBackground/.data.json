@@ -2,10 +2,7 @@
   "className": "Frame",
   "properties": {
     "BackgroundColor3": [0.15, 0.15, 0.15],
-    "BorderColor3": [0.105882, 0.164705, 0.207843],
     "BorderSizePixel": 0,
-    "Size": {
-      "UDim2": [[1.0, 0], [1.0, 0]]
-    }
+    "Size": [[1.0, 0.0], [1.0, 0.0]]
   }
 }
