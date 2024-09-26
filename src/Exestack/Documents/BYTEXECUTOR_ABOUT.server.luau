@@ -6,6 +6,8 @@
 Version 0.4.3 "Alpha"
 
 Programmed by @SpaceDice999 "SpaceCube"
+Contributors: pinehappi
+
 Icons provided by the "Lucide Icons" and "Qwreey" plugins
 
 Read the main DevForum post for update change logs.

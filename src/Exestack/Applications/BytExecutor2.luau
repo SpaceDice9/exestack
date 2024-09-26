@@ -287,7 +287,7 @@ local Themes = {
 
 		NormalIcon = Color3.fromRGB(210, 210, 210),
 		HoverIcon = Color3.fromRGB(240, 240, 240),
-		SelectIcon = Color3.fromRGB(240, 240, 240),
+		SelectIcon = Color3.fromRGB(200, 200, 200),
 		SelectHoverIcon = Color3.fromRGB(255, 255, 255),
 		
 		NormalElement = Color3.fromRGB(47, 47, 47),
@@ -2673,7 +2673,7 @@ function openScript(scriptObject, lineNumber)
 		Util.ForceWidgetOpen(OdeWidget)
 
 		odeScriptEditor.OutputScript = scriptObject
-		odeScriptEditor:LoadStringAsync(scriptObject.Source, lineNumber)
+		odeScriptEditor:SetStringAsync(scriptObject.Source, lineNumber)
 	else
 		if lineNumber then
 			plugin:OpenScript(scriptObject, lineNumber)
