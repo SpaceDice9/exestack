@@ -1,0 +1,27 @@
+{
+	"name": "exestack",
+	"tree": {
+		"$className": "DataModel",
+		"StarterGui": {
+			"$className": "StarterGui",
+			"ScreenGui": {
+				"$className": "ScreenGui",
+				"$properties": {
+					"Archivable": false	
+				},
+
+				"BytExecutorContainer": {
+					"$className": "Frame",
+					"$properties": {
+						"Position": { "UDim2": [[0.1, 0], [0.1, 0]] },
+						"Size": { "UDim2": [[0.3, 0], [0.8, 0]] }
+					},
+
+					"BytExecutorBackground": {
+						"$path": "src/Exestack/UI/BytExecutorBackground"
+					}
+				}
+			}
+		}
+	}
+}
