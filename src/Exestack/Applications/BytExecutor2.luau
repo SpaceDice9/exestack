@@ -128,11 +128,11 @@ local BoxStart = Vector2.new(0, 0)
 local BoxEnd = Vector2.new(0, 0)
 
 local createAdvancedMenu = plugin:CreatePluginMenu("CreateAdvancedBE")
-local createBytAction = plugin:CreatePluginAction("NewBytScriptBE", "New Byt Script", "Create new Byt script", "rbxassetid://10723365877")
-local createFolderAction = plugin:CreatePluginAction("NewFolderBE", "New Folder", "Create new folder", "rbxassetid://10723386531")
-local createSnippetAction = plugin:CreatePluginAction("NewSnippetBE", "New Snippet", "Create new snippet", "rbxassetid://10734942778")
-local createLocalBytAction = plugin:CreatePluginAction("CreateLocalByt", "Create Local Byt", "Create new local Byt", "rbxassetid://10734909540")
-local addLocalBytAction = plugin:CreatePluginAction("AddLocalByt", "Add Local Byt", "Add new local Byt", "rbxassetid://10734909540")
+local createBytAction = plugin:CreatePluginAction("NewBytScriptBE", "New Byt Script", "Create new Byt script", "rbxassetid://120884972668737")
+local createFolderAction = plugin:CreatePluginAction("NewFolderBE", "New Folder", "Create new folder", "rbxassetid://138413185686959")
+local createSnippetAction = plugin:CreatePluginAction("NewSnippetBE", "New Snippet", "Create new snippet", "rbxassetid://109055886398347")
+local createLocalBytAction = plugin:CreatePluginAction("CreateLocalByt", "Create Local Byt", "Create new local Byt", "rbxassetid://131570756675163")
+local addLocalBytAction = plugin:CreatePluginAction("AddLocalByt", "Add Local Byt", "Add new local Byt", "rbxassetid://131570756675163")
 --local createSyncedAction = plugin:CreatePluginAction("NewSynced", "New Synced Byt", "Create new synced Byt", "rbxassetid://10734909016")
 createAdvancedMenu:AddAction(createBytAction)
 createAdvancedMenu:AddAction(createFolderAction)
@@ -155,18 +155,18 @@ advancedMenu:AddAction(runSelectedScriptsAction)
 advancedMenu:AddAction(runLastRanScriptsAction)
 advancedMenu:AddAction(runDMScriptsAction)
 advancedMenu:AddSeparator()
-local advImport = advancedMenu:AddNewAction("ImportScripts", "Import Selected Scripts", "rbxassetid://10723344270")
-local advExport = advancedMenu:AddNewAction("ExportScripts", "Export Selected Scripts", "rbxassetid://10747366434")
-local advSave = advancedMenu:AddNewAction("SaveElements", "Save BytSources Directory", "rbxassetid://10734941499")
-local advCreateBackup = advancedMenu:AddNewAction("CreateBackup", "Create a BytSources Backup", "rbxassetid://10709762233")
-local advLoadBackup = advancedMenu:AddNewAction("LoadBackup", "Load Selected BytSources Backup", "rbxassetid://10709762058")
-local advLoadLastBackup = advancedMenu:AddNewAction("LoadLastBackup", "Load Last BytSources Backup", "rbxassetid://10709762058")
+local advImport = advancedMenu:AddNewAction("ImportScripts", "Import Selected Scripts", "rbxassetid://94127669966579")
+local advExport = advancedMenu:AddNewAction("ExportScripts", "Export Selected Scripts", "rbxassetid://139004015610883")
+local advSave = advancedMenu:AddNewAction("SaveElements", "Save BytSources Directory", "rbxassetid://74841058058613")
+local advCreateBackup = advancedMenu:AddNewAction("CreateBackup", "Create a BytSources Backup", "rbxassetid://72074535145245")
+local advLoadBackup = advancedMenu:AddNewAction("LoadBackup", "Load Selected BytSources Backup", "rbxassetid://96912383734872")
+local advLoadLastBackup = advancedMenu:AddNewAction("LoadLastBackup", "Load Last BytSources Backup", "rbxassetid://96912383734872")
 advancedMenu:AddSeparator()
-local advReload = advancedMenu:AddNewAction("ReloadBytExecutor2", "Reload BytExecutor2 Instances", "rbxassetid://10734933222")
+local advReload = advancedMenu:AddNewAction("ReloadBytExecutor2", "Reload BytExecutor2 Instances", "rbxassetid://89728943589671")
 
 local moreMenu = plugin:CreatePluginMenu("MoreOptionsBE")
 local moreSettings = moreMenu:AddNewAction("OpenSettings", "Preferences")
-local moreHelp = moreMenu:AddNewAction("OpenHelp", "Help", "rbxassetid://10723406988")
+local moreHelp = moreMenu:AddNewAction("OpenHelp", "Help", "rbxassetid://110517228787869")
 local moreAbout = moreMenu:AddNewAction("OpenAbout", "About")
 local buildExestack = moreMenu:AddNewAction("BuildExestack", "Clone Plugin")
 
@@ -294,7 +294,7 @@ local Themes = {
 		HoverElement = Color3.fromRGB(66, 66, 66),
 		SelectElement = Color3.fromRGB(11, 90, 175),
 
-		Positive = Color3.fromRGB(0, 220, 0),
+		Positive = Color3.fromRGB(55, 229, 84),
 		Neutral = Color3.fromRGB(50, 180, 240),
 		Negative = Color3.fromRGB(230, 70, 70),
 		Other = Color3.fromRGB(255, 85, 255),
