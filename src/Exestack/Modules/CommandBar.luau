@@ -12,6 +12,7 @@ function CommandBar.getScriptDocument(): ScriptDocument?
 			return doc
 		end
 	end
+	return nil
 end
 
 -- @return -- Source if possible.
