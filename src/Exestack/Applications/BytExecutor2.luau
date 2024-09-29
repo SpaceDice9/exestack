@@ -2844,6 +2844,8 @@ function loadJsonBackup()
 	local file: File = StudioService:PromptImportFile{"lua", "luau"}
 	local contents = file:GetBinaryContents()
 
+	openFolder()
+	removeAllElements()
 	loadSerializedElementListModule(contents)
 end
 
