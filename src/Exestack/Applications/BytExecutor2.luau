@@ -26,6 +26,7 @@ local TooltipsModule = require(Modules.Tooltips)
 local SettingsManager = require(Modules.SettingsManager)
 local Ode = require(Modules.OdeScriptEditor)
 local Console = require(Modules.Console)
+local CommandBar = require(Modules.CommandBar)
 
 local Breadcrumbs = require(Modules.UI.Breadcrumbs)
 
@@ -133,12 +134,15 @@ local createFolderAction = plugin:CreatePluginAction("NewFolderBE", "New Folder"
 local createSnippetAction = plugin:CreatePluginAction("NewSnippetBE", "New Snippet", "Create new snippet", "rbxassetid://109055886398347")
 local createLocalBytAction = plugin:CreatePluginAction("CreateLocalByt", "Create Local Byt", "Create new local Byt", "rbxassetid://131570756675163")
 local addLocalBytAction = plugin:CreatePluginAction("AddLocalByt", "Add Local Byt", "Add new local Byt", "rbxassetid://131570756675163")
+local importFromCommandBarAction = plugin:CreatePluginAction("ImportFromCommandBar", "Import from Command Bar", "Imports the contents of the command bar into a new byt.", "rbxassetid://128656568635485")
 --local createSyncedAction = plugin:CreatePluginAction("NewSynced", "New Synced Byt", "Create new synced Byt", "rbxassetid://10734909016")
 createAdvancedMenu:AddAction(createBytAction)
 createAdvancedMenu:AddAction(createFolderAction)
 createAdvancedMenu:AddAction(createSnippetAction)
-createAdvancedMenu:AddAction(addLocalBytAction)
 createAdvancedMenu:AddAction(createLocalBytAction)
+createAdvancedMenu:AddSeparator()
+createAdvancedMenu:AddAction(importFromCommandBarAction)
+createAdvancedMenu:AddAction(addLocalBytAction)
 
 local runDMScriptsAction = plugin:CreatePluginAction("RunDMScripts", "Run DataModel Scripts", "Run selected DataModel scripts")
 local runSelectedScriptsAction = plugin:CreatePluginAction("RunSelectedScripts", "Run Selected Scripts", "Run selected scripts")
@@ -3349,6 +3353,29 @@ createLocalBytAction.Triggered:Connect(function()
 	end)
 end)
 
+importFromCommandBarAction.Triggered:Connect(function()
+	local source, err = CommandBar.getSource()
+	if err then
+		warn(err)
+		return
+	end
+	
+	local elementData = addBytElement("CommandBarImport", FolderBreadcrumbs.OpenedFolder)
+	editScriptElementSource(elementData, source)
+	
+	-- Force selection to end
+	ScriptEditorService.TextDocumentDidOpen:Once(function(openedDocument)
+		if openedDocument:GetScript() == elementData.Script then
+			local lines = openedDocument:GetLineCount()
+			local lastLine = openedDocument:GetLine(lines)
+			if lastLine then
+				openedDocument:ForceSetSelectionAsync(lines, #lastLine + 1)
+			end
+		end
+	end)
+	
+	openScript(elementData.Script)
+end)
 
 advExeServerByt.Triggered:Connect(function()
 	if CompiledPreferences.ServerClientExecution then

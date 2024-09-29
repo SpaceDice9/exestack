@@ -4,6 +4,7 @@
 
 ### Added
 * Breadcrumbs to navigate folders. 
+* Import from command bar.
 * Colors to folder and local byt icons.
 
 ### Changed

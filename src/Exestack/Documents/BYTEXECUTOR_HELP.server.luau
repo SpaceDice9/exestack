@@ -20,10 +20,6 @@ To edit a byt or open a folder, double-click it. Holding left click will allow y
 drag an element across the space. If you are confused on what the different icons do,
 hovering over a button will give you a little tooltip. 
 
-If you are inside a folder (directory) and want to leave, double click the top button where
-the directory is shown and it will take you to the parent directory.
-
-
 A pop-up menu can be accessed by right clicking certain elements. The two elements
 that have pop-up menus is the element list, the name of an element, and the
 execute icon on byts.
@@ -38,6 +34,9 @@ Server/Client Execution enabled and if you are currently playtesting.
 This lets you execute from either the server or client without having
 to switch.
 
+If you would like to quickly import from the command bar into a byt, you can go to
+`File -> Customize Shortcuts` and type in `Import from Command Bar`. A suggested
+shortcut is `Alt+I`.
 
 --]]--
 --[[--
