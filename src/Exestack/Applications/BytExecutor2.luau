@@ -90,13 +90,9 @@ local DummyScriptsFolder = Storage.DummyScripts:Clone()
 local ExecutablesFolder = Storage.Executables:Clone()
 local Documents = ExestackFile.Documents:Clone()
 
-local ExportModuleFolder = Instance.new("Folder")
-ExportModuleFolder.Name = "ExportModule"
-
 EditorScripts.Parent = ExecutorWidget
 ExecutablesFolder.Parent = ExecutorWidget
 Documents.Parent = ExecutorWidget
-ExportModuleFolder.Parent = ExecutorWidget
 
 DummyScriptsFolder.Parent = ExecutorWidget
 DummyScriptsFolder.Name = "BYT_DEBUG_REDIRECT"
@@ -2828,16 +2824,20 @@ function createBackup()
 end
 
 function createJsonBackup()
+	local localExportFolder = Instance.new("Folder")
+	localExportFolder.Name = "ExportBytSourcesFolder"
+	localExportFolder.Parent = workspace
+
 	local module = serializeElementListToModule(BytSourcesList)
 	module.Name = "BytBackup-json"
-	module.Parent = ExportModuleFolder
+	module.Parent = localExportFolder
 
 	local selected = Selection:Get()
 	Selection:Set{module}
 
 	plugin:PromptSaveSelection(module.Name)
 	Selection:Set(selected)
-	module:Destroy()
+	localExportFolder:Destroy()
 end
 
 function loadJsonBackup()
