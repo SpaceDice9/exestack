@@ -26,6 +26,19 @@ local Category = {}
 Category.__index = Category
 type SettingsCategory = typeof(Category)
 
+type SettingObject = {
+	Name: string,
+	Id: number,
+	ParameterType: string,
+	Type: string,
+	Instance: Instance,
+	State: any,
+	DefaultState: any,
+	Restrictions: any,
+
+	Set: (any) -> (),
+}
+
 function Category:AddSetting(settingData: SettingData)
 	local genericSetting = script.GUI.GenericSetting:Clone()
 	local settingModule = require(script:FindFirstChild(settingData.Type .. "Setting"))
@@ -51,7 +64,7 @@ function Category:AddSetting(settingData: SettingData)
 		State = state,
 		DefaultState = settingData.DefaultState,
 		Restrictions = settingData.Restrictions,
-	}
+	} :: SettingObject
 	
 	settingModule.create(settingObject, genericSetting)
 	settingObject:Set(settingObject.State)
@@ -172,9 +185,8 @@ end
 
 local Settings = {}
 Settings.__index = Settings
-type PluginSettings = typeof(Settings)
 
-function Settings:AddCategory(categoryName: string): SettingsCategory
+function Settings:AddCategory(categoryName: string)
 	local category = {
 		Parameters = {},
 		Frame = nil,
@@ -421,7 +433,7 @@ end
 
 local SettingsManager = {}
 
-function SettingsManager.BuildSettings(frame: GuiBase2d, themeName: ThemeName): PluginSettings
+function SettingsManager.BuildSettings(frame: GuiBase2d, themeName: ThemeName)
 	local self = {
 		Categories = {},
 		Frame = frame,

@@ -403,12 +403,16 @@ function Buttony.MouseField(buttonFrame: GuiButton, guiInset: number?)
 			if input.UserInputType == Enum.UserInputType.MouseButton3 then
 				return input.Position.X, input.Position.Y - guiInset
 			end
+
+			return
 		end,
 
 		Up = function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton3 then
 				return input.Position.X, input.Position.Y - guiInset
 			end
+
+			return
 		end,
 
 		Move = function(x, y)

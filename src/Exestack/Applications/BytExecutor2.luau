@@ -25,7 +25,6 @@ local Buttony = require(Modules.Buttony)
 local LuaTableModule = require(Modules.LuaTable)
 local GoodSignal = require(Modules.SignalModule)
 local TooltipsModule = require(Modules.Tooltips)
-local SettingsManager = require(Modules.SettingsManager)
 local Ode = require(Modules.OdeScriptEditor)
 local Console = require(Modules.Console)
 local CommandBar = require(Modules.CommandBar)
@@ -652,9 +651,8 @@ Preferences:Compile()
 BytExecutor2Category:Resize()
 
 local CompiledPreferences = Preferences.Options
-local Debug = {}
 
-function pushTable(source, destination)
+function _pushTable(source, destination)
 	table.move(source, 1, #source, #destination + 1, destination)
 end
 
@@ -664,22 +662,8 @@ function lookForInTable(haystack, needle)
 			return k
 		end
 	end
-end
 
-function isCurrentVersionOutdated(currentVersion, newVersion)
-	local currentSplit = string.split(currentVersion, ".")
-	local newSplit = string.split(newVersion, ".")
-
-	for i = #currentSplit, 1, -1 do
-		local currentVersionNumber = tonumber(currentSplit[i])
-		local newVersionNumber = tonumber(newSplit[i])
-
-		if newVersionNumber > currentVersionNumber then
-			return true
-		end
-	end
-
-	return false
+	return
 end
 
 function isInactive()
@@ -814,7 +798,7 @@ function deleteTempFolder(parent, name)
 	tempFolder:Destroy()
 end
 
-function addSnackbar(text)
+function _addSnackbar(text)
 	for _, previousSnackbar in ExecutorBackground.SnackbarContainer:GetChildren() do
 		if previousSnackbar:IsA("Frame") then
 			previousSnackbar.LayoutOrder += 1
@@ -1014,7 +998,7 @@ function selectElement(elementData)
 	changeElementTheme(elementData.Gui, Theme, "select")
 end
 
-function deselectElement(selectionPosition)
+function _deselectElement(selectionPosition)
 	local elementData = ElementSelection[selectionPosition]
 
 	table.remove(ElementSelection, selectionPosition)
@@ -1024,9 +1008,6 @@ end
 
 function deselectAllElements()
 	for i, elementData in ElementSelection do
-		local element = elementData.Gui
-		local elementIcon = element.ElementIcon
-
 		changeElementTheme(elementData.Gui, Theme, "normal")
 	end
 	
@@ -1322,7 +1303,7 @@ end
 
 --unused
 --for moving elements to desired position which isnt implemented yet
-function getListPositionFromMouse(y)
+function _getListPositionFromMouse(y)
 	--80 pixels is when the byt list gui starts
 	return math.ceil((y - 80)/25)
 end
@@ -1331,57 +1312,6 @@ function addPartsToElementData(elementData, parts)
 	for _, part in parts do
 		table.insert(elementData.PartsRegistered, part)
 	end
-end
-
-function buildExecutableEnvironment(executable)
-	local function forceEndThread(env)
-		if executable.ExecutionStatus == "Terminated" then
-			error("001")
-		elseif executable.ExecutionStatus == "Paused" then
-			--coroutine.yield(coroutine.running())
-			Util.YieldCurrentThread()
-		end
-	end
-
-	local env; env = {
-		task = {
-			wait = function(t)
-				local dt = task.wait(t)
-
-				forceEndThread(env)
-				return dt
-			end,
-
-			delay = function(t, f, ...)
-				task.wait(t)
-
-				forceEndThread(env)
-				return task.spawn(f, ...)
-			end,
-
-			spawn = task.spawn,
-			defer = task.defer,
-			cancel = task.cancel,
-		},
-
-		wait = function(t)
-			local dt = wait(t)
-
-			forceEndThread(env)
-			return dt
-		end,
-
-		delay = function(t, f, ...)
-			local dt = wait(t)
-
-			forceEndThread(env)
-			spawn(f, ...)
-		end,
-
-		script = executable.LoadedScript
-	}
-
-	return env
 end
 
 local Executable = {}
@@ -1503,6 +1433,8 @@ function fetchMostRecentError()
 			return logData.message
 		end
 	end
+
+	return
 end
 
 function escapePattern(str)
@@ -1816,18 +1748,16 @@ function loadReplicatedElementList(replicationElementList, parent)
 	end)
 	
 	for _, serializedElementInstance in replicationElementList do
-		local elementData
-
 		if serializedElementInstance:IsA("LuaSourceContainer") then
-			local elementData = addBytElement(serializedElementInstance.Name, parent)
+			local scriptElementData = addBytElement(serializedElementInstance.Name, parent)
 
 			if parent ~= FolderBreadcrumbs.OpenedFolder then
-				elementData.Gui.Parent = nil
+				scriptElementData.Gui.Parent = nil
 			end
 
-			elementData.Script.Source = serializedElementInstance.Source
-			elementData.RawSource = serializedElementInstance.Source
-			elementData.ReplicationInstance = serializedElementInstance
+			scriptElementData.Script.Source = serializedElementInstance.Source
+			scriptElementData.RawSource = serializedElementInstance.Source
+			scriptElementData.ReplicationInstance = serializedElementInstance
 			--print(elementData)
 		elseif serializedElementInstance:IsA("Folder") then
 			local folderElementData = addFolderElement(serializedElementInstance.Name, parent)
@@ -1858,6 +1788,8 @@ function findFirstElement(folderData, name)
 			return elementData
 		end
 	end
+
+	return
 end
 
 function getUniqueName(newName, nameList)
@@ -2080,8 +2012,6 @@ function addScriptElement(args: ScriptElementArguments)
 	local editorScript = args.EditorScript
 	editorScript.Name = scriptElementData.Name
 	
-	local ogParent = editorScript.Parent
-	
 	scriptElementData.Script = editorScript
 	scriptElementData.RawSource = editorScript.Source
 
@@ -2096,7 +2026,7 @@ function addScriptElement(args: ScriptElementArguments)
 		addReplicationInstance(scriptElementData, replicationInstance, args.Parent)
 		updateReplicationOrdering()
 		
-		local replicationInstance = scriptElementData.ReplicationInstance
+		replicationInstance = scriptElementData.ReplicationInstance
 		replicationInstance.Source = scriptElementData.RawSource
 
 		local loadedLua = loadScriptSource(scriptElementData.RawSource)
@@ -2248,9 +2178,6 @@ function addSnippetElement(snippetName, parent)
 		EditorScript = snippetEditorScript,
 		Parent = parent,
 	})
-
-	local element = snippetData.Gui
-	local interactions = element.Interactions
 	
 	return snippetData
 end
@@ -2273,7 +2200,7 @@ function addFolderElement(folderName, parent)
 
 	MouseField:LeftClick(interactions.Export, function()
 		local firstSelected = Selection:Get()[1]
-		local parent, exportedElements = serializeElementListToInstance({folderData}, returnDefaultParent(firstSelected))
+		local _, exportedElements = serializeElementListToInstance({folderData}, returnDefaultParent(firstSelected))
 
 		Selection:Set(exportedElements)
 	end)
@@ -2435,9 +2362,9 @@ function removeElement(elementData, keepScript)
 		
 		elementData.Script:Destroy()
 	elseif elementData.Type == ElementTypes.Folder then
-		local elementDataList = elementData.ElementList
+		local subElementDataList = elementData.ElementList
 
-		for _, childElementData in elementDataList do
+		for _, childElementData in subElementDataList do
 			removeElement(childElementData)
 		end
 	end
@@ -2483,9 +2410,9 @@ function editScriptElementSource(scriptElementData, newSource)
 end
 
 local snippetPattern = "%-%-@[%w]+"
-local snippetRawPattern = "%-%-@[%w/]+"
+-- local snippetRawPattern = "%-%-@[%w/]+"
 
-function getSnippetCall(line, rawCallString)
+function _getSnippetCall(line, rawCallString)
 	local placeholders = string.split(rawCallString, "/")
 	local rawCall = placeholders[1]
 	local call = rawCall:match(snippetPattern)
@@ -2851,7 +2778,6 @@ end
 
 --Makes sure we arent selecting both parent and descendant
 function removeImportRedundanciesInHierarchy()
-	local selected = {}
 	local redundancies = {}
 
 	for _, selectedInstance in Selection:Get() do
@@ -3091,6 +3017,8 @@ function returnAPI.FindElement(str)
 			return elementData
 		end
 	end
+
+	return
 end
 
 function returnAPI.ExecuteScript(scr, allowBytLib)
@@ -3372,7 +3300,7 @@ end)
 
 advExport.Triggered:Connect(function()
 	local firstSelected = Selection:Get()[1]
-	local parent, exportedElements = serializeElementListToInstance(ElementSelection, returnDefaultParent(firstSelected))
+	local _, exportedElements = serializeElementListToInstance(ElementSelection, returnDefaultParent(firstSelected))
 	
 	Selection:Set(exportedElements)
 end)
@@ -3487,7 +3415,7 @@ runDMScriptsAction.Triggered:Connect(function()
 	for _, selectedScript in Selection:Get() do
 		if selectedScript:IsA("LuaSourceContainer") then
 			local loadedScript = loadScript(selectedScript)
-			local success, executable = convertScriptToExecutable(loadedScript)
+			local _, executable = convertScriptToExecutable(loadedScript)
 
 			executable:Execute()
 		end
@@ -3506,7 +3434,7 @@ runSelectedScriptsAction.Triggered:Connect(function()
 				loadedScript = elementData.ReplicationInstance.InternalScript
 			end
 
-			local success, executable = convertScriptToExecutable(loadedScript)
+			local _, executable = convertScriptToExecutable(loadedScript)
 
 			executable:Execute()
 		end
@@ -3524,7 +3452,7 @@ runLastRanScriptsAction.Triggered:Connect(function()
 	local loadedScript
 
 	if not isReplicationUsable() then
-		loadedScript = loadScript(previousByt.Script)
+		loadedScript = loadScript(bytScript)
 		giveScriptBytLib(loadedScript)
 	else
 		loadedScript = previousByt.ReplicationInstance.InternalScript

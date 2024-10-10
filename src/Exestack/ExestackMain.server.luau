@@ -88,7 +88,7 @@ GeneralCategory:AddSetting{
 
 local CompiledPreferences = Preferences.Options
 
-function isCurrentVersionOutdated(currentVersion, newVersion)
+function _isCurrentVersionOutdated(currentVersion, newVersion)
 	local currentSplit = string.split(currentVersion, ".")
 	local newSplit = string.split(newVersion, ".")
 
@@ -119,7 +119,7 @@ function getTempScreen(screenName)
 	return screen
 end
 
-function createNotification(text)
+function _createNotification(text)
 	local notification = Storage.NotifyFrame:Clone()
 	notification.Position = UDim2.new(1, -10, 1, 100)
 	notification.Label.Text = text

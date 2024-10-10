@@ -10,8 +10,6 @@ local Util = require(Modules.Util)
 local Zeciar = require(Modules.Zeciar)
 local Signal = require(Modules.SignalModule)
 
-local AppList = require(Modules.AppList)
-
 local PerfProfWidgetInfo = DockWidgetPluginGuiInfo.new(
 	Enum.InitialDockState.Float,
 	false,
@@ -32,13 +30,8 @@ Background.Parent = PerfProfWidget
 local InfoContainer = Background.InfoScrollFrame.InfoContainer
 local BarContainer = Background.HistogramContainer.GraphContainer.BarContainer
 
-local PluginSaveKeys = {
-	Preferences = "Preferences"
-}
-
 local Preferences = References.Preferences
 local PerfProfCategory = Preferences:AddCategory("Performance Profiler")
-local SavedPreferences = plugin:GetSetting(PluginSaveKeys.Preferences) or {}
 
 PerfProfCategory:AddSection("Summary")
 PerfProfCategory:AddSetting({
@@ -146,14 +139,14 @@ function InfoBox:Ticket(text)
 end
 
 function InfoBox:Spacing(spacing)
-	local spacing = Storage.Spacing:Clone()
-	spacing.Visible = self.Open
+	local spacingGui = Storage.Spacing:Clone()
+	spacingGui.Visible = self.Open
 	
 	if spacing then
-		spacing.Size = UDim2.new(1, 0, 0, spacing)
+		spacingGui.Size = UDim2.new(1, 0, 0, spacing)
 	end
 	
-	spacing.Parent = self.Instance
+	spacingGui.Parent = self.Instance
 	
 	self:Resize()
 end
@@ -408,7 +401,7 @@ end
 
 function getScale(n)
 	local digits = math.floor(math.log(n, 10))
-	local leading = n/(math.pow(10, digits))
+	local _leading = n/(math.pow(10, digits))
 
 	local max = math.pow(10, digits)
 
@@ -515,7 +508,7 @@ function generateHistogram(datasets)
 		table.insert(keys, index)
 	end
 	
-	local lowerGraphDigitBound, upperGraphDigitBound, divisions, subdivisions, barSize, tens = getGraphBounds(lowerBound, upperBound)
+	local lowerGraphDigitBound, upperGraphDigitBound, _divisions, subdivisions, barSize, tens = getGraphBounds(lowerBound, upperBound)
 	local superdivisions = upperGraphDigitBound - lowerGraphDigitBound
 	local lowerGraphBound, upperGraphBound = lowerGraphDigitBound*tens, upperGraphDigitBound*tens
 	local range = upperGraphBound - lowerGraphBound
@@ -566,7 +559,7 @@ function generateHistogram(datasets)
 		end
 	end
 	
-	local _, upperHeightDigitBound, heightDivisions, heightSubdivisions, _, heightTens = getGraphBounds(0, maxHeight)
+	local _, upperHeightDigitBound, _heightDivisions, heightSubdivisions, _, heightTens = getGraphBounds(0, maxHeight)
 	local heightSuperdivisions = upperHeightDigitBound
 	local upperHeightBound = upperHeightDigitBound*heightTens
 	
@@ -709,9 +702,9 @@ function changeTheme(themeName)
 	Background.HeightContainer.BorderColor3 = themeData.Border
 	Background.HeightContainer.TextLabel.TextColor3 = themeData.Text
 	
-	local marker = Storage.Marker
-	marker.BackgroundColor3 = themeData.Indent
-	marker.Label.TextColor3 = themeData.Text
+	local markerAsset = Storage.Marker
+	markerAsset.BackgroundColor3 = themeData.Indent
+	markerAsset.Label.TextColor3 = themeData.Text
 	
 	for _, marker in Background.LegendContainer.Legend:GetChildren() do
 		if not marker:IsA("GuiBase2d") then
@@ -755,15 +748,15 @@ function changeTheme(themeName)
 	
 	Background.InfoScrollFrame.BackgroundColor3 = themeData.LowerBackground
 	
-	local infoBox = Storage.InfoBox
-	infoBox.BackgroundColor3 = themeData.InfoBox
-	infoBox.InfoBoxName.BackgroundColor3 = themeData.InfoBoxName
-	infoBox.InfoBoxName.TextColor3 = themeData.Text
-	infoBox.InfoBoxName.ImageLabel.ImageColor3 = themeData.Icon
-	infoBox.InfoBoxName.ColorBox.BorderColor3 = themeData.Border
+	local infoBoxAsset = Storage.InfoBox
+	infoBoxAsset.BackgroundColor3 = themeData.InfoBox
+	infoBoxAsset.InfoBoxName.BackgroundColor3 = themeData.InfoBoxName
+	infoBoxAsset.InfoBoxName.TextColor3 = themeData.Text
+	infoBoxAsset.InfoBoxName.ImageLabel.ImageColor3 = themeData.Icon
+	infoBoxAsset.InfoBoxName.ColorBox.BorderColor3 = themeData.Border
 	
-	local infoTicket = Storage.InfoLabel
-	infoTicket.TextColor3 = themeData.Text
+	local infoTicketAsset = Storage.InfoLabel
+	infoTicketAsset.TextColor3 = themeData.Text
 	
 	for _, infoBoxData in InfoBoxList do
 		local infoBox = infoBoxData.Instance

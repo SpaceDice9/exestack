@@ -74,15 +74,11 @@ function exportTable(data, tabs)
 
 	local str = "{\n"
 	local indentation = string.rep("\9", tabs)
-	local tableType = "Unknown"
-
-	local lastKeyType = "unknown"
 
 	local isGaplessArray = isValidArrayGapless(data)
 
 	for key, value in data do
 		local tokenizedValue = tokenize(value)
-		local tokenizedKey = tokenize(key)
 
 		if isGaplessArray then
 			str ..= indentation .. "\9" .. tokenizedValue .. ",\n"
@@ -201,7 +197,6 @@ function API.Require(module: ModuleScript | string): any
 
 		return require(freshModule)
 	elseif typeof(module) == "string" then
-		local currentThread = coroutine.running()
 		local bytData = API._Apps.BytExecutor2.FindElement(module)
 		
 		if bytData.Type ~= "BytScript" then

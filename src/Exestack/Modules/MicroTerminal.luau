@@ -82,7 +82,6 @@ function lexCommand(command)
 
 	--Separate flags
 	local flags = {}
-	local totalFlagSize = #rawTokens
 	local totalFlags = 0
 
 	for order, argument in rawTokens do
@@ -118,7 +117,7 @@ function lexCommand(command)
 	return tokens
 end
 
-function MicroTerminal.RegisterCommand(commandName: string, commandFunc: (Tokens) -> (), formatString: string)
+function MicroTerminal.RegisterCommand(commandName: string, commandFunc: (Tokens) -> ())
 	commands[commandName] = commandFunc
 end
 
@@ -127,16 +126,9 @@ function MicroTerminal.CallCommand(command: string)
 end
 
 function MicroTerminal.ProcessCommand(command: string)
-	local START = os.clock()
 	local tokens = lexCommand(command)
-	local END = os.clock()
-
-	--print(tokens)
-	--print(END - START)
 
 	if not tokens[1] or not tokens[1].token then
-		--warn(`Error Encountered: failed to run incomplete command`)
-
 		return
 	end
 
@@ -145,7 +137,6 @@ function MicroTerminal.ProcessCommand(command: string)
 	if commandFunc then
 		commandFunc(tokens)
 	else
-		--warn(`Error Encountered: failed to run nonexistant command "{tokens[1].token}"`)
 	end
 end
 
