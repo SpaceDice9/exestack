@@ -3,6 +3,8 @@ local Selection = game:GetService("Selection")
 local ScriptEditorService = game:GetService("ScriptEditorService")
 local RunService = game:GetService("RunService")
 local LogService = game:GetService("LogService")
+local HttpService = game:GetService("HttpService")
+local StudioService = game:GetService("StudioService")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
@@ -162,9 +164,13 @@ advancedMenu:AddSeparator()
 local advImport = advancedMenu:AddNewAction("ImportScripts", "Import Selected Scripts", "rbxassetid://94127669966579")
 local advExport = advancedMenu:AddNewAction("ExportScripts", "Export Selected Scripts", "rbxassetid://139004015610883")
 local advSave = advancedMenu:AddNewAction("SaveElements", "Save BytSources Directory", "rbxassetid://74841058058613")
-local advCreateBackup = advancedMenu:AddNewAction("CreateBackup", "Create a BytSources Backup", "rbxassetid://72074535145245")
-local advLoadBackup = advancedMenu:AddNewAction("LoadBackup", "Load Selected BytSources Backup", "rbxassetid://96912383734872")
-local advLoadLastBackup = advancedMenu:AddNewAction("LoadLastBackup", "Load Last BytSources Backup", "rbxassetid://96912383734872")
+local backupMenu = plugin:CreatePluginMenu("BackupMenuBE", "Backups", "rbxassetid://72074535145245")
+advancedMenu:AddMenu(backupMenu)
+local advCreateBackup = backupMenu:AddNewAction("CreateBackup", "Create a BytSources Backup", "rbxassetid://72074535145245")
+local advLoadBackup = backupMenu:AddNewAction("LoadBackup", "Load Selected BytSources Backup", "rbxassetid://96912383734872")
+local advLoadLastBackup = backupMenu:AddNewAction("LoadLastBackup", "Load Last BytSources Backup", "rbxassetid://96912383734872")
+local advCreateJsonBackup = backupMenu:AddNewAction("CreateJsonBackup", "Create a BytSources JSON Backup")
+local advLoadJsonBackup = backupMenu:AddNewAction("LoadJsonBackup", "Load a BytSources JSON Backup")
 advancedMenu:AddSeparator()
 local advReload = advancedMenu:AddNewAction("ReloadBytExecutor2", "Reload BytExecutor2 Instances", "rbxassetid://89728943589671")
 
@@ -2755,6 +2761,20 @@ function serializeElementList(elementDataList)
 	return serializedElementList
 end
 
+function serializeElementListToModule(elementDataList): ModuleScript
+	local json = HttpService:JSONEncode(serializeElementList(elementDataList))
+	local elementDataListModule = Instance.new("ModuleScript")
+	elementDataListModule.Source = json
+
+	return elementDataListModule
+end
+
+function loadSerializedElementListModule(json: string)
+	local serializedElementList = HttpService:JSONDecode(json)
+
+	return loadSerializedElementList(serializedElementList)
+end
+
 function serializeElementListToInstance(elementDataList, parent)
 	local serializedElements = {}
 
@@ -2801,6 +2821,32 @@ function createBackup()
 	serializedElementListInstance:SetAttribute("Version", ExestackFile:GetAttribute("Version"))
 
 	return serializedElementListInstance
+end
+
+function createJsonBackup()
+	local localExportFolder = Instance.new("Folder")
+	localExportFolder.Name = "ExportBytSourcesFolder"
+	localExportFolder.Parent = workspace
+
+	local module = serializeElementListToModule(BytSourcesList)
+	module.Name = "BytBackup-json"
+	module.Parent = localExportFolder
+
+	local selected = Selection:Get()
+	Selection:Set{module}
+
+	plugin:PromptSaveSelection(module.Name)
+	Selection:Set(selected)
+	localExportFolder:Destroy()
+end
+
+function loadJsonBackup()
+	local file: File = StudioService:PromptImportFile{"lua", "luau"}
+	local contents = file:GetBinaryContents()
+
+	openFolder()
+	removeAllElements()
+	loadSerializedElementListModule(contents)
 end
 
 --Makes sure we arent selecting both parent and descendant
@@ -3314,6 +3360,14 @@ advLoadLastBackup.Triggered:Connect(function()
 	if lastBackup and lastBackup:GetAttribute("TimeCreated") and lastBackup:GetAttribute("Version") then
 		loadBackup(lastBackup)
 	end
+end)
+
+advCreateJsonBackup.Triggered:Connect(function()
+	createJsonBackup()
+end)
+
+advLoadJsonBackup.Triggered:Connect(function()
+	loadJsonBackup()
 end)
 
 advExport.Triggered:Connect(function()
