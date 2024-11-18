@@ -30,7 +30,7 @@ local Ode = require(Modules.OdeScriptEditor)
 local Console = require(Modules.Console)
 local CommandBar = require(Modules.CommandBar)
 
-local Breadcrumbs = require(Modules.UI.Breadcrumbs)
+local Breadcrumbs = require(Modules.UIComponents.Breadcrumbs)
 
 local AppList = require(Modules.AppList)
 
