@@ -259,48 +259,4 @@ function Zeciar.NormalCDF(lower: number, upper: number, mean: number?, sd: numbe
 	return integral(z_lower, z_upper, StandardNormalFunc)
 end
 
-
-function tcoef(df)
-	
-end
-
-local function rawtcdf(x, df)
-	
-end
-
-local function getrawtcdf(df)
-	return function(t)
-		return rawtcdf(t, df)
-	end
-end
-
-function Zeciar.StudentTPDF(x: number, df: number, mean: number?, se: number?)
-	
-end
-
-function Zeciar.StudentTCDF(lower: number, upper: number, df: number, mean: number?, se: number?)
-	
-end
-
-function Zeciar.StudentTQuantile(probability, df)
-	
-end
-
-
-
-
-function Zeciar.ChiSqrPDF(a, b)
-
-end
-
-function Zeciar.ChiSqrCDF(a, b)
-
-end
-
-
-
-function Zeciar.tTest()
-	
-end
-
 return Zeciar
