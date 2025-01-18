@@ -3041,9 +3041,7 @@ function returnAPI.ExecuteScript(scr, allowBytLib)
 	end)
 	
 	executable.OnStatusChange:Connect(function(newStatus)
-		if newStatus == ExecutionStatuses.Terminated then
-			coroutine.resume(currentThread)
-		elseif newStatus == ExecutionStatuses.Failed then
+		if newStatus == ExecutionStatuses.Terminated or newStatus == ExecutionStatuses.Failed then
 			coroutine.resume(currentThread)
 		end
 	end)
