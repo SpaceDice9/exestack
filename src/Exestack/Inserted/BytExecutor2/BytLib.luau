@@ -30,12 +30,10 @@ function tokenize(data, tabs)
 
 	if typeof(data) == "string" then
 		tokenizedData = "\"" .. literalize(data) .. "\""
-	elseif typeof(data) == "boolean" then
+	elseif typeof(data) == "boolean" or typeof(data) == "number" or typeof(data) == "EnumItem" then -- NOTE: unravel when necessary
 		tokenizedData = tostring(data)
 	elseif typeof(data) == "table" then
 		tokenizedData = exportTable(data, tabs + 1)
-	elseif typeof(data) == "number" then
-		tokenizedData = tostring(data)
 	elseif typeof(data) == "Vector3" then
 		tokenizedData = "Vector3.new(" .. data.X .. ", " .. data.Y .. ", " .. data.Z .. ")"
 	elseif typeof(data) == "Vector2" then
@@ -50,8 +48,6 @@ function tokenize(data, tabs)
 		tokenizedData = "UDim2.new(" .. data.X.Scale .. ", " .. data.X.Offset .. ", " .. data.Y.Scale .. ", " .. data.Y.Offset .. ")"
 	elseif typeof(data) == "UDim" then
 		tokenizedData = "UDim.new(" .. data.Scale .. ", " .. data.Offset .. ")"
-	elseif typeof(data) == "EnumItem" then
-		tokenizedData = tostring(data)
 	elseif typeof(data) == "NumberSequence" then
 		tokenizedData = "NumberSequence.new(" .. exportTable(data.Keypoints, tabs + 1) .. ")"
 	elseif typeof(data) == "NumberSequenceKeypoint" then
