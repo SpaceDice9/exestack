@@ -4,6 +4,7 @@ local CoreGui = game:GetService("CoreGui")
 local ScratchpadGenerator = require(script.Parent.Parent.Parent.GuiGenerators.ScratchpadGenerator)
 local OdeScriptEditor = require(script.Parent.Parent.OdeScriptEditor)
 local Draggable = require(script.Parent.util.Draggable)
+local GoodSignal = require(script.Parent.Parent.SignalModule)
 
 export type ThemeData = {
 	Background: Color3,
@@ -46,6 +47,7 @@ type ScratchpadImpl = {
 type ScratchpadFields = {
 	ScreenGui: ScreenGui,
 	Container: ScratchpadGenerator.ScratchpadContainer,
+	OnWantToRun: any,
 	_odeScriptEditor: any,
 	_themeData: ThemeData,
 }
@@ -81,14 +83,25 @@ function Scratchpad.new(themeData: ThemeData)
 	local self = {
 		ScreenGui = scratchpadGui,
 		Container = container,
+		OnWantToRun = GoodSignal.new(),
 		_odeScriptEditor = odeScriptEditor,
 		_themeData = themeData
 	}
 
 	setmetatable(self, Scratchpad)
 
-	local gripButton = container.ScratchpadInteractions:FindFirstChild("GripButton") :: ScratchpadGenerator.Interaction
+	local gripButton = container.ScratchpadInteractions.GripButton :: ScratchpadGenerator.Interaction
 	Draggable.hook(gripButton, container)
+
+	local runButton = container.ScratchpadInteractions.RunButton
+	runButton.MouseButton1Click:Connect(function()
+		self.OnWantToRun:Fire(odeScriptEditor.RawSource)
+	end)
+
+	local clearButton = container.ScratchpadInteractions.ClearButton
+	clearButton.MouseButton1Click:Connect(function()
+		odeScriptEditor:Unload()
+	end)
 
 	return self
 end

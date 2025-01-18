@@ -1395,6 +1395,18 @@ function loadScriptSource(scriptSource)
 	return loadedLua
 end
 
+function loadScriptFromSource(name: string, source: string)
+	local loadelScript = InsertedScripts.BytExecutable:Clone()
+	local loadedLua = loadScriptSource(source)
+
+	loadelScript.Name = name
+	loadelScript.Parent = ExecutablesFolder
+
+	loadedLua:ToScript(loadelScript)
+
+	return loadelScript
+end
+
 function loadScript(scriptObject)
 	local scriptElementData = ScriptDataListFromScript[scriptObject]
 	local source
@@ -1405,18 +1417,12 @@ function loadScript(scriptObject)
 		source = scriptObject.Source
 	end
 
-	local loadelScript = InsertedScripts.BytExecutable:Clone()
-	local loadedLua = loadScriptSource(source)
-
-	loadelScript.Name = scriptObject.Name .. " [INTERNAL EXECUTABLE]"
-	loadelScript.Parent = ExecutablesFolder
+	local loadelScript = loadScriptFromSource(scriptObject.Name .. " [INTERNAL EXECUTABLE]", source)
 
 	local redirect = Instance.new("ObjectValue")
 	redirect.Name = "BytScriptRedirect"
 	redirect.Value = scriptObject
 	redirect.Parent = loadelScript
-
-	loadedLua:ToScript(loadelScript)
 
 	return loadelScript
 end
@@ -1476,7 +1482,7 @@ function convertScriptToExecutable(loadedScript)
 			local errorContext = getErrorContext(errorMsg)
 			local line = tonumber(errorContext.Line)
 			
-			if line > 0 then
+			if redirect and line > 0 then
 				redirect:SetAttribute("LineOccurred", line)
 			end
 		end)
@@ -2629,6 +2635,16 @@ function openScript(scriptObject, lineNumber)
 	end
 end
 
+--Scratchpad
+function onScratchpadRequestRun(source: string)
+	local loadedScript = loadScriptFromSource("Scratchpad", source)
+	local success, runnable = convertScriptToExecutable(loadedScript)
+
+	if success then
+		runnable:Execute()
+	end
+end
+
 --Contextual Exporting
 function returnScriptType(parent)
 	local isLocal = selfAndAncestorIs(parent, "GuiBase2D")
@@ -3361,6 +3377,8 @@ importFromCommandBarAction.Triggered:Connect(function()
 	
 	openScript(elementData.Script)
 end)
+
+ScratchpadPopout.OnWantToRun:Connect(onScratchpadRequestRun)
 
 advExeServerByt.Triggered:Connect(function()
 	if CompiledPreferences.ServerClientExecution then
