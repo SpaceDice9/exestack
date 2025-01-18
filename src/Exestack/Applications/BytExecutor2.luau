@@ -30,6 +30,7 @@ local Console = require(Modules.Console)
 local CommandBar = require(Modules.CommandBar)
 
 local Breadcrumbs = require(Modules.UI.Breadcrumbs)
+local Scratchpad = require(Modules.UI.Scratchpad)
 
 local AppList = require(Modules.AppList)
 
@@ -391,6 +392,8 @@ local FolderBreadcrumbs = Breadcrumbs.new({
 
 	RootName = "BS",
 })
+
+local ScratchpadPopout = Scratchpad.new(Theme)
 
 local Tooltips = TooltipsModule.init(ExecutorBackground.TooltipFrame, ExecutorBackground)
 Tooltips:newTooltip(NewBytScriptButton, "New Element")
@@ -957,6 +960,8 @@ function changeTheme(themeName)
 		IconColor = themeData.NormalIcon,
 		TextColor = themeData.TextColor,
 	})
+
+	ScratchpadPopout:ChangeTheme(themeData)
 
 	ExecutorBackground.Display.Separater1.BackgroundColor3 = themeData.HeavyBorder
 	ExecutorBackground.Display.Separater2.BackgroundColor3 = themeData.HeavyBorder
