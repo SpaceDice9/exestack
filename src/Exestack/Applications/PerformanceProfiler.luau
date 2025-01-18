@@ -54,20 +54,6 @@ PerfProfCategory:AddSetting({
 	Restrictions = {}
 })
 
---PerfProfCategory:AddSpacing()
---PerfProfCategory:AddSection("Experimental")
-
---PerfProfCategory:AddSetting({
---	Name = "InferentialStatistics",
---	Descriptor = "Inferential Statistics",
---	Description = "Use inferential statistics to estimate true average performance and evaluate significant differences",
---	Type = "Boolean",
-
---	DefaultState = false,
---	SettingsState = SavedPreferences,
---	Restrictions = {}
---})
-
 local CompiledPreferences = Preferences.Options
 
 local Themes = {
