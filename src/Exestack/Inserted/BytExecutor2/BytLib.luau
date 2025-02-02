@@ -135,6 +135,9 @@ function API.Require(module: ModuleScript | string): any
 end
 
 function API.Perf(amount: number, funcList: {() -> ()})
+	assert(amount >= 1, "Cannot benchmark less than one run")
+	assert(amount < math.huge, "Cannot benchmark infinite runs")
+	
 	local funcTimesList = {}
 	
 	local success = pcall(function()
@@ -161,6 +164,8 @@ function API.Perf(amount: number, funcList: {() -> ()})
 end
 
 function API.PerfSlow(amount: number, funcList: {() -> ()})
+	assert(amount >= 1, "Cannot benchmark less than one run")
+	
 	local funcTimesList = {}
 	
 	if amount > 100 then
