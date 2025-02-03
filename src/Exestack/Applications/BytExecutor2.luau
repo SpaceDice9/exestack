@@ -3343,16 +3343,18 @@ importFromCommandBarAction.Triggered:Connect(function()
 	local elementData = addBytElement("CommandBarImport", FolderBreadcrumbs.OpenedFolder)
 	editScriptElementSource(elementData, source)
 	
-	-- Force selection to end
-	ScriptEditorService.TextDocumentDidOpen:Once(function(openedDocument)
-		if openedDocument:GetScript() == elementData.Script then
-			local lines = openedDocument:GetLineCount()
-			local lastLine = openedDocument:GetLine(lines)
-			if lastLine then
-				openedDocument:ForceSetSelectionAsync(lines, #lastLine + 1)
+	if not CompiledPreferences.CustomScriptEditorBE then
+		-- Force selection to end
+		ScriptEditorService.TextDocumentDidOpen:Once(function(openedDocument)
+			if openedDocument:GetScript() == elementData.Script then
+				local lines = openedDocument:GetLineCount()
+				local lastLine = openedDocument:GetLine(lines)
+				if lastLine then
+					openedDocument:ForceSetSelectionAsync(lines, #lastLine + 1)
+				end
 			end
-		end
-	end)
+		end)
+	end
 	
 	openScript(elementData.Script)
 end)

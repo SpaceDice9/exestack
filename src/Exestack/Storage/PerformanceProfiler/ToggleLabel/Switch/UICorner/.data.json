@@ -1,0 +1,8 @@
+{
+  "className": "UICorner",
+  "properties": {
+    "CornerRadius": {
+      "UDim": [1, 0]
+    }
+  }
+}

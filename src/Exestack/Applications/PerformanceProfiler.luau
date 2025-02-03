@@ -71,6 +71,9 @@ local Themes = {
 		
 		InfoBox = Color3.fromRGB(57, 57, 57),
 		InfoBoxName = Color3.fromRGB(87, 87, 87),
+		
+		Untoggled = Color3.fromRGB(100, 100, 100),
+		Toggled = Color3.fromRGB(73, 194, 94),
 	},
 	
 	Light = {
@@ -87,6 +90,9 @@ local Themes = {
 
 		InfoBox = Color3.fromRGB(180, 180, 180),
 		InfoBoxName = Color3.fromRGB(200, 200, 200),
+		
+		Untoggled = Color3.fromRGB(140, 140, 140),
+		Toggled = Color3.fromRGB(73, 194, 94),
 	}
 }
 
@@ -120,6 +126,36 @@ function InfoBox:Ticket(text)
 	infoLabel.Visible = self.Open
 	infoLabel.Text = text
 	infoLabel.Parent = self.Instance
+	
+	self:Resize()
+end
+
+local function updateToggleVisual(toggle: typeof(Storage.ToggleLabel))
+	local on = toggle:GetAttribute("on")
+	toggle.Label.TextColor3 = Theme.Text
+	if on then
+		toggle.Switch.Pill.Position = UDim2.fromOffset(22, 2)
+		toggle.Switch.BackgroundColor3 = Theme.Toggled
+	else
+		toggle.Switch.Pill.Position = UDim2.fromOffset(2, 2)
+		toggle.Switch.BackgroundColor3 = Theme.Untoggled
+	end
+end
+
+function InfoBox:Toggle(label: string, default: boolean, callback: (boolean) -> ())
+	local toggleLabel = Storage.ToggleLabel:Clone()
+	toggleLabel.Visible = self.Open
+	toggleLabel.Label.Text = label
+	toggleLabel.Parent = self.Instance
+	
+	toggleLabel:SetAttribute("on", default)
+	updateToggleVisual(toggleLabel)
+	
+	toggleLabel.Switch.Activated:Connect(function()
+		toggleLabel:SetAttribute("on", not toggleLabel:GetAttribute("on"))
+		updateToggleVisual(toggleLabel)
+		callback(toggleLabel:GetAttribute("on"))
+	end)
 	
 	self:Resize()
 end
@@ -262,10 +298,14 @@ end
 
 local PerformanceProfiler = {}
 
-function createInfoBox(name, color, id)
+function createInfoBox(name, color: Color3, id)
 	local infoBox = Storage.InfoBox:Clone()
 	infoBox.InfoBoxName.Text = name or "Unknown Function"
-	infoBox.InfoBoxName.ColorBox.BackgroundColor3 = color
+	if color == nil then
+		infoBox.InfoBoxName.ColorBox.Visible = false
+	else
+		infoBox.InfoBoxName.ColorBox.BackgroundColor3 = color
+	end
 	infoBox.Parent = InfoContainer
 	
 	local self = {
@@ -466,12 +506,21 @@ function detoggleAllHistograms()
 	end
 end
 
-function generateHistogram(datasets)
+type GenerateHistogramOptions = {
+	showOutliers: boolean,
+}
+
+function generateHistogram(datasets, options: GenerateHistogramOptions)
 	table.clear(HistogramData)
 	local upperBound, lowerBound = 0, math.huge
 	
 	for _, dataset in datasets do
-		local min, max = getRangeFromSet(dataset)
+		local min: number, max: number
+		if options.showOutliers then
+			min, max = getRangeFromSet(dataset)
+		else
+			min, max = getRangeFromSet(Zeciar.WithoutOutliers(dataset))
+		end
 		
 		if min < lowerBound then
 			lowerBound = min
@@ -509,7 +558,9 @@ function generateHistogram(datasets)
 		for _, v in dataset do
 			local index = math.min(subdivisions, math.floor((v - lowerGraphBound)/(range) * subdivisions) + 1)
 			
-			histogram[index] += 1
+			if histogram[index] then
+				histogram[index] += 1
+			end
 		end
 	end
 	
@@ -752,9 +803,11 @@ function changeTheme(themeName)
 		infoBox.InfoBoxName.ImageLabel.ImageColor3 = themeData.Icon
 		infoBox.InfoBoxName.ColorBox.BorderColor3 = themeData.Border
 		
-		for _, infoTicket in infoBox:GetChildren() do
-			if infoTicket.Name == "InfoLabel" then
-				infoTicket.TextColor3 = themeData.Text
+		for _, infoElement in infoBox:GetChildren() do
+			if infoElement.Name == "InfoLabel" then
+				infoElement.TextColor3 = themeData.Text
+			elseif infoElement.Name == "ToggleLabel" then
+				updateToggleVisual(infoElement)
 			end
 		end
 	end
@@ -767,7 +820,11 @@ function PerformanceProfiler.graph(datasets)
 	clearInfoBoxes()
 	clearHistograms()
 	
-	generateHistogram(datasets)
+	local options = {
+		showOutliers = false,
+	}
+	
+	generateHistogram(datasets, options)
 	
 	local verbose = CompiledPreferences.VerboseSummary
 	
@@ -812,6 +869,13 @@ function PerformanceProfiler.graph(datasets)
 			infoBox:Ticket("kurtosis: " .. truncate(Zeciar.Kurtosis(dataset)))
 		end
 	end
+	
+	-- Options
+	local optionsInfoBox = createInfoBox("options", nil, nil)
+	optionsInfoBox:Toggle("Show Outliers", options.showOutliers, function(show)
+		options.showOutliers = show
+		generateHistogram(datasets, options)
+	end)
 	
 	Util.ForceWidgetOpen(PerfProfWidget)
 end
