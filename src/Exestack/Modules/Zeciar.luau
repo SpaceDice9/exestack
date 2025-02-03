@@ -142,6 +142,22 @@ function Zeciar.GetOutliers(distribution)
 	return outliers
 end
 
+-- Same as GetOutliers, but without outliers instead of only with
+function Zeciar.WithoutOutliers(distribution)
+	local _, q1, _, q3, _ = Zeciar.Quartiles(distribution)
+	local iqr = q3 - q1
+
+	local nonOutliers = {}
+
+	for _, value in pairs(distribution) do
+		if not (value > q3 + iqr*1.5 or value < q1 - iqr*1.5) then
+			table.insert(nonOutliers, value)
+		end
+	end
+
+	return nonOutliers
+end
+
 --uses 2 sigma distance from mean
 function Zeciar.GetOutliers2(distribution)
 	local mean = Zeciar.Mean(distribution)
