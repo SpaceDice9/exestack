@@ -21,6 +21,9 @@
         "Modules": {
           "$path": "src/Exestack/Modules"
         },
+		"GuiGenerators": {
+          "$path": "src/Exestack/GuiGenerators"
+        },
         "Storage": {
           "$path": "src/Exestack/Storage"
         },
