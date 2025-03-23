@@ -172,6 +172,7 @@ local advLoadLastBackup = backupMenu:AddNewAction("LoadLastBackup", "Load Last B
 local advCreateJsonBackup = backupMenu:AddNewAction("CreateJsonBackup", "Create a BytSources JSON Backup")
 local advLoadJsonBackup = backupMenu:AddNewAction("LoadJsonBackup", "Load a BytSources JSON Backup")
 advancedMenu:AddSeparator()
+local scratchpadOpen = advancedMenu:AddNewAction("OpenScratchpad", "Open scratchpad")
 local advReload = advancedMenu:AddNewAction("ReloadBytExecutor2", "Reload BytExecutor2 Instances", "rbxassetid://89728943589671")
 
 local moreMenu = plugin:CreatePluginMenu("MoreOptionsBE")
@@ -3395,6 +3396,10 @@ end)
 
 advElementRename.Triggered:Connect(function()
 	ElementRightClicked.Gui.ElementName:CaptureFocus()
+end)
+
+scratchpadOpen.Triggered:Connect(function()
+	ScratchpadPopout:ToggleVisibility(not ScratchpadPopout.ScreenGui.Enabled)
 end)
 
 advReload.Triggered:Connect(function()

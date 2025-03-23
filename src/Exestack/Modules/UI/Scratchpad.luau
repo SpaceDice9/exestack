@@ -42,6 +42,7 @@ type ScratchpadImpl = {
 	__index: ScratchpadImpl,
 	new: (themeData: ThemeData) -> Scratchpad,
 	ChangeTheme: (Scratchpad, ThemeData) -> (),
+	ToggleVisibility: (self: Scratchpad, visibility: boolean) -> (),
 }
 
 type ScratchpadFields = {
@@ -103,7 +104,13 @@ function Scratchpad.new(themeData: ThemeData)
 		odeScriptEditor:Unload()
 	end)
 
+	self:ToggleVisibility(false)
+
 	return self
+end
+
+function Scratchpad:ToggleVisibility(visible: boolean)
+	self.ScreenGui.Enabled = visible
 end
 
 function Scratchpad:ChangeTheme(themeData: ThemeData)
